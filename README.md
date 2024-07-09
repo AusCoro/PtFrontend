@@ -1,16 +1,25 @@
-# PtFrontend
+# Crew and Bag Frontend
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.5.
 
-## Development server
+## Instalar dependesncias
+Para que el proyecto funcione se necesita instalar las dependencias estas deben ser ejecutadas en terminal con:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+`` npm install ``
+o
+` bun install `
+o
+` yarn install `
+
+## Correr el Pryecto
+
+Eejcutar `ng serve` en la terminal. Se alojara en `http://localhost:4200/`.
 
 ## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Ejecutar `ng generate component component-name` para generar un nuevo componente. tambien se puede utilizar `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+<!-- ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
@@ -24,4 +33,4 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page. -->

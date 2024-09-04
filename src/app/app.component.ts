@@ -10,11 +10,4 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'PtFrontend';
-
-  toggleSidebar() {
-    const sidebar = document.getElementById('logo-sidebar');
-    if (sidebar) {
-      sidebar.classList.toggle('hidden');
-    }
-  }
 }

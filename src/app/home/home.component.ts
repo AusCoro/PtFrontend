@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +9,7 @@ import { RouterModule } from '@angular/router';
     RouterModule
   ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
   constructor(private authService: AuthService, private router: Router) { }
@@ -21,10 +20,10 @@ export class HomeComponent {
   }
 
   toggleSidebar() {
-    const sidebar = document.getElementById('logo-sidebar');
+    console.log('toggleSidebar');
+    const sidebar = document.getElementById('homee');
     if (sidebar) {
       sidebar.classList.toggle('hidden');
     }
   }
-
 }

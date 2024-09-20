@@ -11,11 +11,8 @@ export class TableComponent implements OnInit {
 
   filteredData: any[] = [];
   filters: string[] = [];
-
-  ngOnInit(): void {
-    this.filteredData = [...this.data];
-    this.filters = Array(this.headers.length).fill('');
-  }
+  showFilters: boolean[] = [];
+  showStatusModal: boolean = false;
 
   onFilterChange(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;
@@ -23,11 +20,24 @@ export class TableComponent implements OnInit {
     this.applyFilters();
   }
 
+  onStatusClick(rowIndex: number) {
+    this.showStatusModal = true;
+  }
+
   applyFilters(): void {
-    this.filteredData = this.data.filter(row => 
-      row.every((cell: string, index: number) =>
-        cell.toLowerCase().includes(this.filters[index])
-      )
-    );
+    this.filteredData = this.data.filter(row => {
+      return this.filters.every((filter, index) => {
+        if (!filter) {
+          return true;
+        }
+        return row[index].toString().toLowerCase().includes(filter);
+      });
+    });
+  }
+
+  ngOnInit(): void {
+    this.filteredData = [...this.data];
+    this.filters = Array(this.headers.length).fill('');
+    this.showFilters = Array(this.headers.length).fill(false);
   }
 }

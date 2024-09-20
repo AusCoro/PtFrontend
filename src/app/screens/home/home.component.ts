@@ -26,7 +26,7 @@ export class HomeComponent {
 
   closeSidebar() {
     const sidebar = document.getElementById('logo-sidebar');
-    if (sidebar && window.innerWidth < 640) {
+    if (sidebar && window.innerWidth < 969) {
       sidebar.classList.add('-translate-x-full');
     }
   }

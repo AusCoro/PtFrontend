@@ -1,35 +1,48 @@
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-          <!-- Encabezados con filtros -->
-          <th *ngFor="let header of headers; let i = index" scope="col" class="px-6 py-3">
-            <div class="flex items-center">
-              {{ header }}
-              <input 
-                type="text" 
-                (input)="onFilterChange($event, i)" 
-                class="ml-2 p-1 border rounded"
-                placeholder="Filter"
-              />
-            </div>
-          </th>
-          <th scope="col" class="px-6 py-3">
-            <span class="sr-only">Edit</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Filas dinámicas con datos filtrados -->
-        <tr *ngFor="let row of filteredData" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-          <td *ngFor="let cell of row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            {{ cell }}
-          </td>
-          <td class="px-6 py-4 text-right">
-            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div class="max-h-[calc(100vh-10rem)] overflow-y-auto relative overflow-x-auto shadow-md sm:rounded-lg">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <!-- Encabezados con filtros -->
+        <th *ngFor="let header of headers; let i = index" scope="col" class="px-6 py-3">
+          <div class="flex items-center">
+            {{ header }}
+            <button (click)="showFilters[i] = !showFilters[i]" class="ml-2" aria-label="Toggle filter">
+              <i class="fa-solid fa-filter"></i>
+            </button>
+            <input *ngIf="showFilters[i]" type="text" (keyup)="onFilterChange($event, i)"
+              class="ml-2 p-1 border rounded" placeholder="Filter" [id]="'filter-' + header + '-' + i">
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filas dinámicas con datos filtrados -->
+      <tr *ngFor="let row of filteredData; let rowIndex = index"
+        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+        <td *ngFor="let cell of row; let cellIndex = index"
+          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          <span *ngIf="cellIndex !== headers.indexOf('Estatus')">{{ cell }}</span>
+          <a *ngIf="cellIndex === headers.indexOf('Estatus')" class="hover:cursor-pointer" (click)="onStatusClick(rowIndex)">{{ cell }}</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para cambiar el estatus -->
+<div class="fixed inset-0 z-100 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50
+" *ngIf="showStatusModal">
+  <div class="relative p-6 mx-auto w-full max-w-md bg-white rounded-lg shadow-xl z-100"> 
+    <!-- Modal content -->
+    <h2 class="text-lg font-bold mb-4">Cabia el estatus</h2>
+    <select class="w-full border border-gray-300 rounded px-3 py-2">
+      <option value="status1">En progreso</option>
+      <option value="status2">Esperando</option>
+      <option value="status3">Finalizado</option>
+    </select>
+    <div class="mt-6 flex justify-end">
+      <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2" (click)="showStatusModal = false">Cancel</button>
+      <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Actualizar</button>
+    </div>
   </div>
-  
+</div>

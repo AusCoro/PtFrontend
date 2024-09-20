@@ -1,0 +1,94 @@
+<div
+  class="max-h-[calc(100vh-10rem)] overflow-y-auto relative overflow-x-auto shadow-md sm:rounded-lg"
+>
+  <table
+    class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+  >
+    <thead
+      class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+    >
+      <tr>
+        <!-- Encabezados con filtros -->
+        <th
+          *ngFor="let header of headers; let i = index"
+          scope="col"
+          class="px-6 py-3"
+        >
+          <div class="flex items-center">
+            {{ header }}
+            <button
+              (click)="showFilters[i] = !showFilters[i]"
+              class="ml-2"
+              aria-label="Toggle filter"
+            >
+              <i class="fa-solid fa-filter"></i>
+            </button>
+            <input
+              *ngIf="showFilters[i]"
+              type="text"
+              (keyup)="onFilterChange($event, i)"
+              class="ml-2 p-1 border rounded"
+              placeholder="Filter"
+              [id]="'filter-' + header + '-' + i"
+            />
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filas dinámicas con datos filtrados -->
+      <tr
+        *ngFor="let row of filteredData; let rowIndex = index"
+        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+      >
+        <td
+          *ngFor="let cell of row.data; let cellIndex = index"
+          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+        >
+          <span *ngIf="cellIndex !== headers.indexOf('Estatus')">{{
+            cell
+          }}</span>
+          <a
+            *ngIf="cellIndex === headers.indexOf('Estatus')"
+            class="hover:cursor-pointer px-4 py-2 rounded-full text-white"
+            [ngClass]="{
+              'bg-green-500': cell === 'En progreso',
+              'bg-yellow-500': cell === 'Esperando',
+              'bg-red-500': cell === 'Finalizado'
+            }"
+            (click)="onStatusClick(rowIndex)"
+            >{{ cell }}</a
+          >
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para cambiar el estatus -->
+<app-modal *ngIf="showStatusModal">
+    <!-- Modal content -->
+    <h2 class="text-lg font-bold mb-4">Cambiar el estatus</h2>
+    <select
+      class="w-full border border-gray-300 rounded px-3 py-2"
+      [(ngModel)]="selectedStatus"
+    >
+      <option value="En progreso">En progreso</option>
+      <option value="Esperando">Esperando</option>
+      <option value="Finalizado">Finalizado</option>
+    </select>
+    <div class="mt-6 flex justify-end">
+      <button
+        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2"
+        (click)="showStatusModal = false"
+      >
+        Cancel
+      </button>
+      <button
+        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        (click)="onUpdateStatus()"
+      >
+        Actualizar
+      </button>
+    </div>
+</app-modal>

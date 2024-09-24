@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { roles } from './roles';
+import { UserInterface } from '../../models/users';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss'],
 })
 export class TableComponent implements OnInit {
   @Input() data: any[] = [];
@@ -13,8 +14,24 @@ export class TableComponent implements OnInit {
   filters: string[] = [];
   showFilters: boolean[] = [];
   showStatusModal: boolean = false;
+  showPasswordModal: boolean = false;
   selectedRowId: string | null = null;
   selectedStatus: string = '';
+  selectedAuthorization: string = '';
+  showAuthorizationModal: boolean = false;
+  newPassword: string = '';
+  confirmPassword: string = '';
+  passwordsDoNotMatch: boolean = false;
+
+  myUser: UserInterface = localStorage.getItem('user')
+    ? JSON.parse(localStorage.getItem('user')!)
+    : {};
+
+  role = new roles();
+
+  isAuthorized(role: String): boolean {
+    return this.myUser.role === role;
+  }
 
   onFilterChange(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;
@@ -25,6 +42,16 @@ export class TableComponent implements OnInit {
   onStatusClick(rowIndex: number) {
     this.selectedRowId = this.filteredData[rowIndex].id;
     this.showStatusModal = true;
+  }
+
+  onPasswordClick(rowIndex: number) {
+    this.selectedRowId = this.filteredData[rowIndex].id;
+    this.showPasswordModal = true;
+  }
+
+  onAuthorizationClick(rowIndex: number) {
+    this.selectedRowId = this.filteredData[rowIndex].id;
+    this.showAuthorizationModal = true;
   }
 
   applyFilters(): void {
@@ -51,6 +78,38 @@ export class TableComponent implements OnInit {
       console.log(`Estado seleccionado: ${this.selectedStatus}`);
     }
     this.showStatusModal = false;
+  }
+
+  // Función para manejar la actualización de la contraseña
+  onUpdatePassword() {
+    // const id = this.getSelectedRowId();
+    if (this.newPassword === '' || this.confirmPassword === '') {
+      console.log('Contraseñas vacías');
+      return;
+    } else if (this.newPassword === this.confirmPassword) {
+      // Lógica para actualizar la contraseña
+      console.log('Contraseña actualizada');
+      this.showPasswordModal = false;
+      this.newPassword = '';
+      this.confirmPassword = '';
+    } else {
+      this.passwordsDoNotMatch = true;
+      this.newPassword = '';
+      this.confirmPassword = '';
+    }
+  }
+
+  onUpdateAuthorization() {
+    // const id = this.getSelectedRowId();
+    if (this.selectedAuthorization === '') {
+      console.log('Rol no seleccionado');
+      return;
+    } else {
+      // Lógica para actualizar el rol
+      console.log('Rol actualizado');
+      this.showAuthorizationModal = false;
+      this.selectedAuthorization = '';
+    }
   }
 
   ngOnInit(): void {

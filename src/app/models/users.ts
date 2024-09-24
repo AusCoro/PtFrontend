@@ -6,4 +6,5 @@ export interface UserInterface {
     lastName: string;
     email: string;
     role: string;
+    token: string;
 }

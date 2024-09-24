@@ -1,16 +1,21 @@
-import { Injectable } from '@angular/core';
-import { UserInterface } from '../models/users'; // Asegúrate de que la ruta sea correcta
+import { Component } from '@angular/core';
+import { SharedModule } from '../../shared/shared.module';
+import { UserInterface } from '../../models/users';
 
-@Injectable({
-  providedIn: 'root'
+@Component({
+  selector: 'app-users',
+  standalone: true,
+  imports: [SharedModule],
+  templateUrl: './users.component.html',
 })
-export class AuthService {
-  private loggedIn = false;
-  private users: UserInterface[] = [
+export class UsersComponent {
+  showModal: boolean = false;
+  tableData: any[] = [];
+  users: UserInterface[] = [
     {
       _id: '1',
       userName: 'user1',
-      password: 'admin',
+      password: 'password1',
       firstName: 'John',
       lastName: 'Doe',
       email: 'admin',
@@ -24,7 +29,7 @@ export class AuthService {
       password: 'password1',
       firstName: 'John',
       lastName: 'Doe',
-      email: 'sup',
+      email: 'admin',
       role: 'Supervisor',
       token:
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ5byIsImlhdCI6MTcyNzExMTU0OCwiZXhwIjoxNzU4NjQ3ODcxLCJhdWQiOiJjcmV3Iiwic3ViIjoiYWRtaW4ifQ.vgQH_TXyujlffFffdyHEAU4-lPrzrFbGVB6R1wAb0lI',
@@ -35,32 +40,31 @@ export class AuthService {
       password: 'password1',
       firstName: 'John',
       lastName: 'Doe',
-      email: 'oper',
+      email: 'admin',
       role: 'Operador',
       token:
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ5byIsImlhdCI6MTcyNzExMTU0OCwiZXhwIjoxNzU4NjQ3ODcxLCJhdWQiOiJjcmV3Iiwic3ViIjoiYWRtaW4ifQ.vgQH_TXyujlffFffdyHEAU4-lPrzrFbGVB6R1wAb0lI',
     },
   ];
+  
+  tableHeaders = [
+    'id',
+    'Usuario',
+    'Contraseña',
+    'Nivel de autorización',
+  ];
 
-  isLoggedIn(): boolean {
-    return this.loggedIn;
+  
+  ngOnInit(): void {
+    this.tableData = this.users.map(users => ({
+      data: [
+        users._id,
+        users.userName,
+        '••••••••',
+        users.role,
+      ],
+      id: users._id,
+    }));
   }
 
-  login(email: string, password: string): boolean {
-    const user = this.users.find(u => u.email === email && u.password === password);
-    if (user) {
-      this.loggedIn = true;
-      const token = user.token; // Aquí deberías obtener el token real del servidor
-      localStorage.setItem('authToken', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      return true;
-    }
-    return false;
-  }
-
-  logout(): void {
-    this.loggedIn = false;
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-  }
 }

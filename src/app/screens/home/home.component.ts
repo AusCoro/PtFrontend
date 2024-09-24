@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +21,13 @@ export class HomeComponent {
     const sidebar = document.getElementById('logo-sidebar');
     if (sidebar) {
       sidebar.classList.toggle('-translate-x-full');
+    }
+  }
+
+  closeSidebar() {
+    const sidebar = document.getElementById('logo-sidebar');
+    if (sidebar && window.innerWidth < 969) {
+      sidebar.classList.add('-translate-x-full');
     }
   }
 

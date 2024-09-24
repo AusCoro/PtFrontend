@@ -1,0 +1,200 @@
+<div
+  class="max-h-[calc(100vh-10rem)] overflow-y-auto relative overflow-x-auto shadow-md sm:rounded-lg"
+>
+  <table
+    class="w-full text-sm text-center rtl:text-right text-gray-500 dark:text-gray-400"
+  >
+    <thead
+      class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+    >
+      <tr>
+        <!-- Encabezados con filtros -->
+        <th
+          *ngFor="let header of headers; let i = index"
+          scope="col"
+          class="px-6 py-3 text-center"
+        >
+          <div class="flex items-center justify-center">
+            {{ header }}
+            <button
+              (click)="showFilters[i] = !showFilters[i]"
+              class="ml-2"
+              aria-label="Toggle filter"
+            >
+              <i
+                *ngIf="i !== headers.indexOf('Contraseña')"
+                class="fa-solid fa-filter"
+              ></i>
+            </button>
+            <input
+              *ngIf="showFilters[i]"
+              type="text"
+              (keyup)="onFilterChange($event, i)"
+              class="ml-2 p-1 border rounded"
+              placeholder="Filter"
+              [id]="'filter-' + header + '-' + i"
+            />
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filas dinámicas con datos filtrados -->
+      <tr
+        *ngFor="let row of filteredData; let rowIndex = index"
+        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+      >
+        <td
+          *ngFor="let cell of row.data; let cellIndex = index"
+          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center"
+        >
+          <span
+            *ngIf="
+              cellIndex !== headers.indexOf('Estatus') &&
+              !(
+                (cellIndex === headers.indexOf('Nivel de autorización') &&
+                  !isAuthorized(role.supervisor)) ||
+                (cellIndex === headers.indexOf('Contraseña') &&
+                  !isAuthorized(role.operator))
+              )
+            "
+          >
+            {{ cell }}
+          </span>
+          <a
+            (click)="onAuthorizationClick(rowIndex)"
+            *ngIf="
+              cellIndex === headers.indexOf('Nivel de autorización') &&
+              isAuthorized(role.admin)
+            "
+            class="hover:cursor-pointer"
+          >
+            {{ cell }}
+          </a>
+          <a
+            (click)="onPasswordClick(rowIndex)"
+            *ngIf="
+              cellIndex === headers.indexOf('Contraseña') &&
+              (isAuthorized(role.supervisor) || isAuthorized(role.admin))
+            "
+            class="hover:cursor-pointer"
+          >
+            {{ cell }}
+          </a>
+          <a
+            *ngIf="cellIndex === headers.indexOf('Estatus')"
+            class="hover:cursor-pointer px-4 py-2 rounded-full text-white"
+            [ngClass]="{
+              'bg-green-500': cell === 'En progreso',
+              'bg-yellow-500': cell === 'Esperando',
+              'bg-red-500': cell === 'Finalizado'
+            }"
+            (click)="onStatusClick(rowIndex)"
+          >
+            {{ cell }}
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para cambiar el estatus -->
+<app-modal *ngIf="showStatusModal">
+  <!-- Modal content -->
+  <h2 class="text-lg font-bold mb-4">Cambiar el estatus</h2>
+  <select
+    id="statusSelect"
+    name="statusSelect"
+    class="w-full border border-gray-300 rounded px-3 py-2"
+    [(ngModel)]="selectedStatus"
+  >
+    <option value="En progreso">En progreso</option>
+    <option value="Esperando">Esperando</option>
+    <option value="Finalizado">Finalizado</option>
+  </select>
+  <div class="mt-6 flex justify-end">
+    <button
+      class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2"
+      (click)="showStatusModal = false"
+    >
+      Cancelar
+    </button>
+    <button
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      (click)="onUpdateStatus()"
+    >
+      Actualizar
+    </button>
+  </div>
+</app-modal>
+
+<!-- Modal de cambio de contraseña -->
+<app-modal *ngIf="showPasswordModal">
+  <!-- Modal content -->
+  <h2 class="text-lg font-bold mb-4">Cambiar contraseña</h2>
+  <input
+    type="password"
+    id="newPassword"
+    name="newPassword"
+    class="w-full border rounded px-3 py-2 mb-4"
+    [ngClass]="{'border-red-500': passwordsDoNotMatch}"
+    [(ngModel)]="newPassword"
+    placeholder="Nueva contraseña"
+  />
+  <input
+    type="password"
+    id="confirmPassword"
+    name="confirmPassword"
+    class="w-full border rounded px-3 py-2 mb-4"
+    [ngClass]="{'border-red-500': passwordsDoNotMatch}"
+    [(ngModel)]="confirmPassword"
+    placeholder="Confirmar nueva contraseña"
+  />
+  <div *ngIf="passwordsDoNotMatch" class="text-red-500 mb-4">
+    Las contraseñas no coinciden.
+  </div>
+  <div class="mt-6 flex justify-end">
+    <button
+      class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2"
+      (click)="showPasswordModal = false"
+    >
+      Cancelar
+    </button>
+    <button
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      (click)="onUpdatePassword()"
+    >
+      Actualizar
+    </button>
+  </div>
+</app-modal>
+
+<!-- Modal para cambiar el nivel de autorizacion -->
+<app-modal *ngIf="showAuthorizationModal">
+  <!-- Modal content -->
+  <h2 class="text-lg font-bold mb-4">Cambiar el nivel de autorización</h2>
+  <select
+    id="authorizationLevel"
+    name="authorizationLevel"
+    class="w-full border border-gray-300 rounded px-3 py-2"
+    [(ngModel)]="selectedAuthorization"
+  >
+    <option value="Operador">Operador</option>
+    <option value="Supervisor">Supervisor</option>
+  </select>
+  <div class="mt-6 flex justify-end">
+    <button
+      class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2"
+      (click)="showAuthorizationModal = false"
+    >
+      Cancelar
+    </button>
+    <button
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      (click)="onUpdateAuthorization()"
+    >
+      Actualizar
+    </button>
+  </div>
+</app-modal>

@@ -3,5 +3,36 @@
 <app-table [headers]="tableHeaders" [data]="tableData"></app-table>
 
 <app-modal *ngIf="showModal">
-<!-- TODO: Agregar form al modal para agregar nuevos reportes -->
+    <h2 class="text-lg font-bold mb-4">Crear BDO</h2>
+    <form (ngSubmit)="onSubmit()" >
+        
+        <div class="mb-4">
+            <label for="numRef" class="block text-gray-700 font-bold mb-2">Número de Referencia:</label>
+            <input type="number" id="numRef" [(ngModel)]="report.numRef" name="numRef" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="mb-4">
+            <label for="numBDO" class="block text-gray-700 font-bold mb-2">Número de BDO:</label>
+            <input type="number" id="numBDO" [(ngModel)]="report.numBDO" name="numBDO" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="mb-4">
+            <label for="destination" class="block text-gray-700 font-bold mb-2">Destino:</label>
+            <input type="text" id="destination" [(ngModel)]="report.destination" name="destination" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="mb-4">
+            <label for="station" class="block text-gray-700 font-bold mb-2">Estación:</label>
+            <input type="text" id="station" [(ngModel)]="report.station" name="station" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="mb-4">
+            <label for="airline" class="block text-gray-700 font-bold mb-2">Aerolínea:</label>
+            <input type="text" id="airline" [(ngModel)]="report.airline" name="airline" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="mb-4">
+            <label for="deliveryZone" class="block text-gray-700 font-bold mb-2">Zona de Entrega:</label>
+            <input type="text" id="deliveryZone" [(ngModel)]="report.deliveryZone" name="deliveryZone" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div class="flex items-center justify-between">
+            <button type="button" (click)="showModal = false" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2">Cancelar</button>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline">Guardar</button>
+        </div>
+    </form>
 </app-modal>

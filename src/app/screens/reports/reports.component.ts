@@ -1,18 +1,30 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from "../../shared/shared.module";
+import { SharedModule } from '../../shared/shared.module';
 import { ReportsInterface } from '../../models/report';
+import { FormsModule } from '@angular/forms';
+
+class reportStatus {
+  inProgress: string = 'En progreso';
+  finished: string = 'Finalizado';
+  waiting: string = 'Esperando';
+}
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [SharedModule, CommonModule],
+  imports: [SharedModule, CommonModule, FormsModule],
   templateUrl: './reports.component.html',
-  styleUrl: './reports.component.scss'
+  styleUrl: './reports.component.scss',
 })
-
 export class ReportsComponent {
   showModal: boolean = false;
+  reportName: string = '';
+  reportDescription: string = '';
+  reportDate: string = '';
+
+  ReportStatus = new reportStatus();
+
   reports: ReportsInterface[] = [
     {
       id: '11',
@@ -24,7 +36,7 @@ export class ReportsComponent {
       station: 'A1',
       airline: 'Aeroméxico',
       deliveryZone: 'Hotel',
-      status: 'En progreso'
+      status: 'En progreso',
     },
     {
       id: '22',
@@ -36,7 +48,7 @@ export class ReportsComponent {
       station: 'A1',
       airline: 'Aeroméxico',
       deliveryZone: 'Hotel',
-      status: 'Finalizado'
+      status: 'Finalizado',
     },
     {
       id: '33',
@@ -48,17 +60,83 @@ export class ReportsComponent {
       station: 'A1',
       airline: 'Aeroméxico',
       deliveryZone: 'Hotel',
-      status: 'Esperando'
+      status: 'Esperando',
     },
   ];
 
-  tableHeaders = ['Num.Ref', 'Num.BDO', 'Fecha de creacion', 'Fecha de finalizacion' ,'Destino', 'Estación', 'Aerolínea', 'Zona de entrega', 'Estatus'];
+  report: ReportsInterface = {
+    id: '',
+    numRef: 0,
+    numBDO: 0,
+    create_date: '',
+    finish_date: '',
+    destination: '',
+    station: '',
+    airline: '',
+    deliveryZone: '',
+    status: this.ReportStatus.waiting,
+  };
 
+  tableHeaders = [
+    'Num.Ref',
+    'Num.BDO',
+    'Fecha de creacion',
+    'Fecha de finalizacion',
+    'Destino',
+    'Estación',
+    'Aerolínea',
+    'Zona de entrega',
+    'Estatus',
+  ];
 
-  
+  isReportEmpty(report: ReportsInterface): boolean {
+    if (report.numRef === 0) {
+      return true;
+    } else if (report.numBDO === 0) {
+      return true;
+    } else if (report.destination === '') {
+      return true;
+    } else if (report.station === '') {
+      return true;
+    } else if (report.airline === '') {
+      return true;
+    } else if (report.deliveryZone === '') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  onSubmit() {
+    console.log(this.isReportEmpty(this.report));
+
+    if (this.isReportEmpty(this.report)) {
+      console.log(
+        'El reporte no ha sido modificado completamente y no se enviará.'
+      );
+      return;
+    }
+
+    console.log(this.report);
+
+    this.report = {
+      id: '',
+      numRef: 0,
+      numBDO: 0,
+      create_date: '',
+      finish_date: '',
+      destination: '',
+      station: '',
+      airline: '',
+      deliveryZone: '',
+      status: this.ReportStatus.waiting,
+    };
+    this.showModal = false;
+  }
+
   tableData: any[] = [];
   ngOnInit(): void {
-    this.tableData = this.reports.map(report => ({
+    this.tableData = this.reports.map((report) => ({
       data: [
         report.numRef,
         report.numBDO,
@@ -68,11 +146,9 @@ export class ReportsComponent {
         report.station,
         report.airline,
         report.deliveryZone,
-        report.status
+        report.status,
       ],
-      id: report.id
+      id: report.id,
     }));
   }
-
-  
 }

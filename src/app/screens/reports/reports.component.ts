@@ -17,6 +17,7 @@ class reportStatus {
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.scss',
 })
+
 export class ReportsComponent {
   showModal: boolean = false;
   reportName: string = '';

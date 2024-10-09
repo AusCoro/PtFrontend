@@ -13,7 +13,7 @@ o
 
 ## Correr el Pryecto
 
-Eejcutar `ng serve` en la terminal. Se alojara en `http://localhost:4200/`.
+Ejcutar `ng serve` en la terminal. Se alojara en `http://localhost:4200/`.
 
 ## Code scaffolding
 

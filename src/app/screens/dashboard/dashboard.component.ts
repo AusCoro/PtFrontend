@@ -6,22 +6,23 @@ import { SharedModule } from '../../shared/shared.module';
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.component.html',
-  imports: [SharedModule]
+  imports: [SharedModule],
 })
 export class DashboardComponent {
-
   options = {
     chart: {
       type: 'area',
       height: 350,
+      width: '100%', // Ensure this is a valid value
     },
-    series: [{
-      name: 'Users',
-      data: [31, 40, 28, 51, 42, 109, 100]
-    }],
+    series: [
+      {
+        name: 'Users',
+        data: [31, 40, 28, 51, 42, 109, 100],
+      },
+    ],
     xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
-    }
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+    },
   };
-
 }

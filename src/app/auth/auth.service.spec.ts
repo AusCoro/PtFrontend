@@ -2,61 +2,45 @@ import { TestBed } from '@angular/core/testing';
 
 import { AuthService } from './auth.service';
 
-describe('AuthService', () => {
-  let service: AuthService;
+  describe('AuthService', () => {
+    let service: AuthService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthService);
-  });
+    beforeEach(() => {
+      TestBed.configureTestingModule({});
+      service = TestBed.inject(AuthService);
+    });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
-describe('AuthService', () => {
-  let service: AuthService;
+    it('should be created', () => {
+      expect(service).toBeTruthy();
+    });
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthService);
-  });
+    it('should store the token in localStorage when setToken is called', () => {
+      const token = 'test-token';
+      service.setToken(token);
+      expect(localStorage.getItem('token')).toBe(token);
+    });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should retrieve the token from localStorage when getToken is called', () => {
+      const token = 'test-token';
+      localStorage.setItem('token', token);
+      expect(service.getToken()).toBe(token);
+    });
 
-  it('should return false when user is not logged in', () => {
-    const isLoggedIn = service.isLoggedIn();
-    expect(isLoggedIn).toBeFalse();
-  });
+    it('should return true when there is a token in localStorage', () => {
+      const token = 'test-token';
+      localStorage.setItem('token', token);
+      expect(service.isAuthenticated()).toBeTrue();
+    });
 
-  it('should return true when user is logged in', () => {
-    service.login();
-    const isLoggedIn = service.isLoggedIn();
-    expect(isLoggedIn).toBeTrue();
-  });
+    it('should return false when there is no token in localStorage', () => {
+      localStorage.removeItem('token');
+      expect(service.isAuthenticated()).toBeFalse();
+    });
 
-  it('should set loggedIn to true and store in localStorage when login is called', () => {
-    service.login();
-    const isLoggedIn = service.isLoggedIn();
-    const storedValue = localStorage.getItem('isLoggedIn');
-    expect(isLoggedIn).toBeTrue();
-    expect(storedValue).toBe('true');
+    it('should remove the token from localStorage when logout is called', () => {
+      const token = 'test-token';
+      localStorage.setItem('token', token);
+      service.logout();
+      expect(localStorage.getItem('token')).toBeNull();
+    });
   });
-
-  it('should set loggedIn to false and remove from localStorage when logout is called', () => {
-    service.logout();
-    const isLoggedIn = service.isLoggedIn();
-    const storedValue = localStorage.getItem('isLoggedIn');
-    expect(isLoggedIn).toBeFalse();
-    expect(storedValue).toBeNull();
-  });
-
-  it('should initialize loggedIn state based on localStorage', () => {
-    localStorage.setItem('isLoggedIn', 'true');
-    service.initializeAuthenticationState();
-    const isLoggedIn = service.isLoggedIn();
-    expect(isLoggedIn).toBeTrue();
-  });
-});

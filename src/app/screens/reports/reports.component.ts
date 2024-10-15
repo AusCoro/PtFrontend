@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { ReportsInterface } from '../../models/report';
 import { FormsModule } from '@angular/forms';
+import { ApiService } from '../../service/api.service';
+import { firstValueFrom } from 'rxjs';
 
 class reportStatus {
   inProgress: string = 'En progreso';
@@ -17,65 +19,24 @@ class reportStatus {
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.scss',
 })
-
-export class ReportsComponent {
+export class ReportsComponent implements OnInit {
   showModal: boolean = false;
-  reportName: string = '';
-  reportDescription: string = '';
-  reportDate: string = '';
+  // reportName: string = '';
+  // reportDescription: string = '';
+  // reportDate: string = '';
+  reports: ReportsInterface[] = [];
+  tableData: any[] = [];
+  loading: boolean = true;
+
+  constructor(private apiService: ApiService) {}
 
   ReportStatus = new reportStatus();
 
-  reports: ReportsInterface[] = [
-    {
-      id: '11',
-      numRef: 1,
-      numBDO: 233223,
-      create_date: '05/05/2023',
-      finish_date: '',
-      destination: 'Cancun',
-      station: 'A1',
-      airline: 'Aeroméxico',
-      deliveryZone: 'Hotel',
-      status: 'En progreso',
-    },
-    {
-      id: '22',
-      numRef: 2,
-      numBDO: 233223,
-      create_date: '05/05/2023',
-      finish_date: '05/05/2023',
-      destination: 'Consumel',
-      station: 'A1',
-      airline: 'Aeroméxico',
-      deliveryZone: 'Hotel',
-      status: 'Finalizado',
-    },
-    {
-      id: '33',
-      numRef: 3,
-      numBDO: 233223,
-      create_date: '05/05/2023',
-      finish_date: '',
-      destination: 'Yucatan',
-      station: 'A1',
-      airline: 'Aeroméxico',
-      deliveryZone: 'Hotel',
-      status: 'Esperando',
-    },
-  ];
-
-  report: ReportsInterface = {
-    id: '',
-    numRef: 0,
-    numBDO: 0,
-    create_date: '',
-    finish_date: '',
-    destination: '',
-    station: '',
+  new_report: ReportsInterface = {
+    reference_number: 0,
+    bdo_number: 0,
     airline: '',
-    deliveryZone: '',
-    status: this.ReportStatus.waiting,
+    delivery_zone: '',
   };
 
   tableHeaders = [
@@ -83,73 +44,84 @@ export class ReportsComponent {
     'Num.BDO',
     'Fecha de creacion',
     'Fecha de finalizacion',
-    'Destino',
-    'Estación',
     'Aerolínea',
     'Zona de entrega',
     'Estatus',
   ];
 
   isReportEmpty(report: ReportsInterface): boolean {
-    if (report.numRef === 0) {
+    if (report.reference_number === 0) {
       return true;
-    } else if (report.numBDO === 0) {
-      return true;
-    } else if (report.destination === '') {
-      return true;
-    } else if (report.station === '') {
+    } else if (report.bdo_number === 0) {
       return true;
     } else if (report.airline === '') {
       return true;
-    } else if (report.deliveryZone === '') {
+    } else if (report.delivery_zone === '') {
       return true;
     } else {
       return false;
     }
   }
 
-  onSubmit() {
-    console.log(this.isReportEmpty(this.report));
+  async onSubmit() {
 
-    if (this.isReportEmpty(this.report)) {
-      console.log(
+    if (this.isReportEmpty(this.new_report)) {
+      console.error(
         'El reporte no ha sido modificado completamente y no se enviará.'
       );
       return;
+    } else {
+      try {
+        const response = await firstValueFrom(this.apiService.createReport(this.new_report));
+        this.reports.push(response);
+        console.log('Report created:', response);
+      } catch (error) {
+        console.error('Error creating report:', error);
+      } finally {
+        this.new_report = {
+          reference_number: 0,
+          bdo_number: 0,
+          airline: '',
+          delivery_zone: '',
+        };
+        this.showModal = false
+      }
     }
 
-    console.log(this.report);
+    console.log(this.new_report);
 
-    this.report = {
-      id: '',
-      numRef: 0,
-      numBDO: 0,
-      create_date: '',
-      finish_date: '',
-      destination: '',
-      station: '',
+    this.new_report = {
+      reference_number: 0,
+      bdo_number: 0,
       airline: '',
-      deliveryZone: '',
-      status: this.ReportStatus.waiting,
+      delivery_zone: '',
     };
     this.showModal = false;
   }
 
-  tableData: any[] = [];
   ngOnInit(): void {
-    this.tableData = this.reports.map((report) => ({
-      data: [
-        report.numRef,
-        report.numBDO,
-        report.create_date,
-        report.finish_date ? report.finish_date : 'N/A',
-        report.destination,
-        report.station,
-        report.airline,
-        report.deliveryZone,
-        report.status,
-      ],
-      id: report.id,
-    }));
+    this.loadReports();
+  }
+
+  async loadReports() {
+    try {
+      this.reports = await firstValueFrom(this.apiService.getReports());
+      this.tableData = this.reports.map((report) => ({
+        data: [
+          report.reference_number,
+          report.bdo_number,
+          report.creation_date,
+          report.delivery_date ? report.delivery_date : 'N/A',
+          report.airline,
+          report.delivery_zone,
+          report.delivery_status,
+        ],
+        id: report.id,
+      }));
+    } catch (error) {
+      console.error('Error loading reports:', error);
+    } finally {
+      this.loading = false;
+    }
   }
 }

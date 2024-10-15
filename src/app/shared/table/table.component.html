@@ -85,9 +85,11 @@
             *ngIf="cellIndex === headers.indexOf('Estatus')"
             class="hover:cursor-pointer px-4 py-2 rounded-full text-white"
             [ngClass]="{
-              'bg-green-500': cell === 'En progreso',
-              'bg-yellow-500': cell === 'Esperando',
-              'bg-red-500': cell === 'Finalizado'
+              'bg-blue-500': cell === 'Facturado',
+              'bg-green-500': cell === 'Activo',
+              'bg-yellow-500': cell === 'Pendiente',
+              'bg-red-500': cell === 'Finalizado',
+
             }"
             (click)="onStatusClick(rowIndex)"
           >

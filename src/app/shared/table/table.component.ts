@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { roles } from './roles';
 import { UserInterface } from '../../models/users';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-table',
@@ -23,14 +24,14 @@ export class TableComponent implements OnInit {
   confirmPassword: string = '';
   passwordsDoNotMatch: boolean = false;
 
-  myUser: UserInterface = localStorage.getItem('user')
-    ? JSON.parse(localStorage.getItem('user')!)
-    : {};
+  constructor(private authService: AuthService) {}
+
+  myUserRole: string | null = this.authService.getRole();
 
   role = new roles();
 
   isAuthorized(role: String): boolean {
-    return this.myUser.role === role;
+    return this.myUserRole === role;
   }
 
   onFilterChange(event: Event, index: number): void {
@@ -100,7 +101,8 @@ export class TableComponent implements OnInit {
   }
 
   onUpdateAuthorization() {
-    // const id = this.getSelectedRowId();
+    const id = this.getSelectedRowId();
+    console.log(`ID seleccionado: ${id}`);
     if (this.selectedAuthorization === '') {
       console.log('Rol no seleccionado');
       return;

@@ -1,29 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:8000'; // La URL de tu API
+  constructor(private userService: UserService) {}
 
-  constructor(private http: HttpClient) {}
-
-  // Método POST para el login
-  login(username: string, password: string): Observable<any> {
-    const url = `${this.apiUrl}/users/login`; // Ruta del endpoint de login en tu API
-
-    // Crear HttpParams con username y password
-    const body = new HttpParams()
-      .set('username', username)
-      .set('password', password);
-
-    // Configurar los headers para enviar datos como form fields
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
-
-    return this.http.post(url, body.toString(), { headers });
+  // Método para el login usando UserService
+  login(username: string, password: string) {
+    return this.userService.login(username, password);
   }
+
+  // Método para obtener todos los usuarios usando UserService
+  getUsers() {
+    return this.userService.getUsers();
+  }
+
+  // Método para crear un usuario nuevo usando UserService
+  createUser(user: any) {
+    return this.userService.createUser(user);
+  }
+
 }

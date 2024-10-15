@@ -15,17 +15,19 @@ export const authInterceptor: HttpInterceptorFn = (
   next: HttpHandlerFn
 ): Observable<HttpEvent<any>> => {
   const router = inject(Router);
+
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (token) {
       const cloned = req.clone({
         headers: req.headers.set('Authorization', `Bearer ${token}`),
       });
+
       return next(cloned).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401 || error.status === 403) {
             // Token expirado o no autorizado
-            localStorage.removeItem('authToken'); // Opcional: Remover token del almacenamiento local
+            localStorage.removeItem('token');
             router.navigate(['/login']); // Redirigir al login
           }
           return throwError(() => new Error(error.message));
@@ -33,5 +35,14 @@ export const authInterceptor: HttpInterceptorFn = (
       );
     }
   }
-  return next(req);
+  return next(req).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401 || error.status === 403) {
+        // Token expirado o no autorizado
+        localStorage.removeItem('token');
+        router.navigate(['/login']);
+      }
+      return throwError(() => new Error(error.message));
+    })
+  );
 };

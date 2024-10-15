@@ -10,29 +10,52 @@ export class AuthService {
 
   // Guarda el token en el localStorage
   setToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.tokenKey, token);
+    } else {
+      console.error('localStorage is not available');
+    }
   }
 
   setRole(role: string): void {
-    localStorage.setItem('role', role);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('role', role);
+    } else {
+      console.error('localStorage is not available');
+    }
   }
 
   getRole(): string | null {
-    return localStorage.getItem('role');
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('role');
+    } else {
+      console.error('localStorage is not available');
+      return null;
+    }
   }
 
   // Obtiene el token del localStorage
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+  getToken() {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem(this.tokenKey);
+    } else {
+      console.error('localStorage is not available');
+      return null;
+    }
   }
 
   // Verifica si el usuario está autenticado (si hay un token válido en localStorage)
-  isAuthenticated(): boolean {
-    return !!this.getToken();
+  isAuthenticated() {
+    const token = this.getToken();
+    return !!token;
   }
 
   // Cierra sesión eliminando el token
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(this.tokenKey);
+    } else {
+      console.error('localStorage is not available');
+    }
   }
 }

@@ -1,25 +1,90 @@
 import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
+import { ReportService } from './report.service';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private reportService: ReportService
+  ) {}
 
   // Método para el login usando UserService
-  login(username: string, password: string) {
-    return this.userService.login(username, password);
+  login(username: string, password: string): Observable<any> {
+    try {
+      return this.userService.login(username, password).pipe(
+        catchError((error) => {
+          console.error('Error en login:', error);
+          return throwError(() => new Error('Error en login'));
+        })
+      );
+    } catch (error) {
+      console.error('Error en login:', error);
+      return throwError(() => new Error('Error en login'));
+    }
   }
 
   // Método para obtener todos los usuarios usando UserService
-  getUsers() {
-    return this.userService.getUsers();
+  getUsers(): Observable<any[]> {
+    try {
+      return this.userService.getUsers().pipe(
+        catchError((error) => {
+          console.error('Error al obtener usuarios:', error);
+          return throwError(() => new Error('Error al obtener usuarios'));
+        })
+      );
+    } catch (error) {
+      console.error('Error al obtener usuarios:', error);
+      return throwError(() => new Error('Error al obtener usuarios'));
+    }
   }
 
   // Método para crear un usuario nuevo usando UserService
-  createUser(user: any) {
-    return this.userService.createUser(user);
+  createUser(user: any): Observable<any> {
+    try {
+      return this.userService.createUser(user).pipe(
+        catchError((error) => {
+          console.error('Error al crear usuario:', error);
+          return throwError(() => new Error('Error al crear usuario'));
+        })
+      );
+    } catch (error) {
+      console.error('Error al crear usuario:', error);
+      return throwError(() => new Error('Error al crear usuario'));
+    }
   }
 
+  // Método para obtener todos los reportes usando ReportService
+  getReports(): Observable<any[]> {
+    try {
+      return this.reportService.getReports().pipe(
+        catchError((error) => {
+          console.error('Error al obtener reportes:', error);
+          return throwError(() => new Error('Error al obtener reportes'));
+        })
+      );
+    } catch (error) {
+      console.error('Error al obtener reportes:', error);
+      return throwError(() => new Error('Error al obtener reportes'));
+    }
+  }
+
+  // Método para crear un reporte nuevo usando ReportService
+  createReport(report: any): Observable<any> {
+    try {
+      return this.reportService.createReport(report).pipe(
+        catchError((error) => {
+          console.error('Error al crear reporte:', error);
+          return throwError(() => new Error('Error al crear reporte'));
+        })
+      );
+    } catch (error) {
+      console.error('Error al crear reporte:', error);
+      return throwError(() => new Error('Error al crear reporte'));
+    }
+  }
 }

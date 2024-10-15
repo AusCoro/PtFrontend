@@ -27,13 +27,18 @@ export class LoginComponent {
       next: (response) => {
         // Guarda el token usando AuthService
         this.authService.setToken(response.token);
+        this.authService.setRole(response.role);
 
         // Redirige a la página principal o protegida
         this.router.navigate(['/']);
       },
       error: (error) => {
         console.error('Login failed:', error);
-        this.errorMessage = 'Credenciales incorrectas';
+        if (error.status === 0) {
+          this.errorMessage = 'No se pudo conectar con el servidor. Por favor, inténtelo de nuevo más tarde.';
+        } else {
+          this.errorMessage = 'Credenciales incorrectas';
+        }
       },
     });
   }

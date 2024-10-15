@@ -13,6 +13,14 @@ export class AuthService {
     localStorage.setItem(this.tokenKey, token);
   }
 
+  setRole(role: string): void {
+    localStorage.setItem('role', role);
+  }
+
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
+
   // Obtiene el token del localStorage
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);

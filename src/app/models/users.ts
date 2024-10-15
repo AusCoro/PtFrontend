@@ -1,10 +1,9 @@
 export interface UserInterface {
-    _id: string;
-    userName: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: string;
-    token: string;
+  id: string;
+  username: string;
+  full_name: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  password: string;
 }

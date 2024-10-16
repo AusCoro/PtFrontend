@@ -87,4 +87,19 @@ export class ApiService {
       return throwError(() => new Error('Error al crear reporte'));
     }
   }
+
+  // Método para actualizar el status de un reporte
+  updateReportStatus(reportId: string, status: string): Observable<any> {
+    try {
+      return this.reportService.updateReportStatus(reportId, status).pipe(
+        catchError((error) => {
+          console.error('Error al actualizar status del reporte:', error);
+          return throwError(() => new Error('Error al actualizar status del reporte'));
+        })
+      );
+    } catch (error) {
+      console.error('Error al actualizar status del reporte:', error);
+      return throwError(() => new Error('Error al actualizar status del reporte'));
+    }
+  }
 }

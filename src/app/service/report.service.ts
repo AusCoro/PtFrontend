@@ -32,4 +32,15 @@ export class ReportService {
     return this.http.post(url, report, { headers });
   }
 
+  // Método PUT para actualizar status del reporte
+  updateReportStatus(reportId: string, status: string): Observable<any> {
+    const url = `${this.apiUrl}/reports/?report_id=${reportId}&delivery_status=${status}`;
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+    return this.http.put(url, {}, { headers });
+  }
+
 }

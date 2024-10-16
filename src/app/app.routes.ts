@@ -5,6 +5,8 @@ import { HomeComponent } from './screens/home/home.component';
 import { DashboardComponent } from './screens/dashboard/dashboard.component';
 import { ReportsComponent } from './screens/reports/reports.component';
 import { UsersComponent } from './screens/users/users.component';
+import { AdminGuard } from './auth/admin.guard';
+import { SupervisorGuard } from './auth/supervisor.guard';
 
 export const routes: Routes = [
   {
@@ -16,9 +18,9 @@ export const routes: Routes = [
     component: HomeComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: DashboardComponent },
-      { path: 'reports', component: ReportsComponent },
-      { path: 'users', component: UsersComponent },
+      { path: 'dashboard', component: DashboardComponent, canActivate: [AdminGuard] },
+      { path: '', component: ReportsComponent },
+      { path: 'users', component: UsersComponent, canActivate: [SupervisorGuard] },
     ],
   },
   { path: '**', redirectTo: '' },

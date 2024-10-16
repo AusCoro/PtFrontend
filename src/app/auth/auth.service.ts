@@ -54,6 +54,7 @@ export class AuthService {
   logout(): void {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem(this.tokenKey);
+      localStorage.removeItem('role');
     } else {
       console.error('localStorage is not available');
     }

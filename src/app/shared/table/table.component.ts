@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { roles } from './roles';
 import { UserInterface } from '../../models/users';
 import { AuthService } from '../../auth/auth.service';
+import { ApiService } from '../../service/api.service';
 
 @Component({
   selector: 'app-table',
@@ -24,7 +25,7 @@ export class TableComponent implements OnInit {
   confirmPassword: string = '';
   passwordsDoNotMatch: boolean = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private apiService: ApiService ) {}
 
   myUserRole: string | null = this.authService.getRole();
 
@@ -74,10 +75,12 @@ export class TableComponent implements OnInit {
   // Función para manejar la actualización del estado
   onUpdateStatus(): void {
     const id = this.getSelectedRowId();
-    if (id) {
-      console.log(`ID seleccionado: ${id}`);
-      console.log(`Estado seleccionado: ${this.selectedStatus}`);
+    if (id !== null) {
+      this.apiService.updateReportStatus(id, this.selectedStatus).subscribe();
+    } else {
+      console.error('ID is null, cannot update status');
     }
+    this.selectedStatus = '';
     this.showStatusModal = false;
   }
 

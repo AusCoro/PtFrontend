@@ -23,9 +23,6 @@ class reportStatus {
 })
 export class ReportsComponent implements OnInit {
   showModal: boolean = false;
-  // reportName: string = '';
-  // reportDescription: string = '';
-  // reportDate: string = '';
   reports: ReportsInterface[] = [];
   tableData: any[] = [];
   loading: boolean = true;
@@ -85,18 +82,12 @@ export class ReportsComponent implements OnInit {
       } catch (error) {
         console.error('Error creating report:', error);
       } finally {
-        this.new_report = {
-          reference_number: 0,
-          bdo_number: 0,
-          airline: '',
-          delivery_zone: '',
-        };
-        this.showModal = false;
+        this.onCancel();
       }
     }
+  }
 
-    console.log(this.new_report);
-
+  onCancel() {
     this.new_report = {
       reference_number: 0,
       bdo_number: 0,

@@ -86,13 +86,13 @@ export class TableComponent implements OnInit {
 
   // Función para manejar la actualización de la contraseña
   onUpdatePassword() {
-    // const id = this.getSelectedRowId();
+    const id = this.getSelectedRowId();
     if (this.newPassword === '' || this.confirmPassword === '') {
-      console.log('Contraseñas vacías');
+      console.error('Contraseñas vacías');
       return;
     } else if (this.newPassword === this.confirmPassword) {
       // Lógica para actualizar la contraseña
-      console.log('Contraseña actualizada');
+      this.apiService.updatePassword(this.newPassword, id!).subscribe();
       this.showPasswordModal = false;
       this.newPassword = '';
       this.confirmPassword = '';
@@ -105,13 +105,12 @@ export class TableComponent implements OnInit {
 
   onUpdateAuthorization() {
     const id = this.getSelectedRowId();
-    console.log(`ID seleccionado: ${id}`);
     if (this.selectedAuthorization === '') {
-      console.log('Rol no seleccionado');
+      console.error('Rol no seleccionado');
       return;
     } else {
       // Lógica para actualizar el rol
-      console.log('Rol actualizado');
+      this.apiService.updateAuthorization(id!, this.selectedAuthorization).subscribe();
       this.showAuthorizationModal = false;
       this.selectedAuthorization = '';
     }

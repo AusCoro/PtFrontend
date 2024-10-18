@@ -5,6 +5,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { UserInterface } from '../../models/users';
 import { ApiService } from '../../service/api.service';
 import { firstValueFrom } from 'rxjs';
+import { on } from 'node:events';
 
 @Component({
   selector: 'app-users',
@@ -35,10 +36,21 @@ export class UsersComponent implements OnInit {
     first_name: '',
     last_name: '',
     full_name: '',
+    zone: '',
     role: '',
   };
 
   onCancel() {
+    this.newUser = {
+      id: '',
+      username: '',
+      full_name: '',
+      first_name: '',
+      last_name: '',
+      role: '',
+      zone: '',
+      password: '',
+    };
     this.showModal = false;
   }
 
@@ -47,7 +59,7 @@ export class UsersComponent implements OnInit {
       user.password === '' ||
       user.first_name === '' ||
       user.last_name === '' ||
-      user.role === ''
+      user.role === '' || user.zone === ''
     );
   }
 
@@ -60,20 +72,10 @@ export class UsersComponent implements OnInit {
           this.apiService.createUser(this.newUser)
         );
         this.users.push(response);
-        console.log('User created:', response);
       } catch (error) {
         console.error('Error creating user:', error);
       } finally {
-        this.newUser = {
-          id: '',
-          username: '',
-          full_name: '',
-          first_name: '',
-          last_name: '',
-          role: '',
-          password: '',
-        };
-        this.showModal = false;
+        this.onCancel();
       }
     }
   }

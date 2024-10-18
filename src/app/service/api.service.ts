@@ -87,4 +87,49 @@ export class ApiService {
       return throwError(() => new Error('Error al crear reporte'));
     }
   }
+
+  // Método para actualizar el status de un reporte
+  updateReportStatus(reportId: string, status: string): Observable<any> {
+    try {
+      return this.reportService.updateReportStatus(reportId, status).pipe(
+        catchError((error) => {
+          console.error('Error al actualizar status del reporte:', error);
+          return throwError(() => new Error('Error al actualizar status del reporte'));
+        })
+      );
+    } catch (error) {
+      console.error('Error al actualizar status del reporte:', error);
+      return throwError(() => new Error('Error al actualizar status del reporte'));
+    }
+  }
+
+  // Método para actualizar la contraseña de un usuario
+  updatePassword(newPassword: string, userId: string): Observable<any> {
+    try {
+      return this.userService.updatePassword(newPassword, userId).pipe(
+        catchError((error) => {
+          console.error('Error al actualizar contraseña:', error);
+          return throwError(() => new Error('Error al actualizar contraseña'));
+        })
+      );
+    } catch (error) {
+      console.error('Error al actualizar contraseña:', error);
+      return throwError(() => new Error('Error al actualizar contraseña'));
+    }
+  }
+
+  // Método para actualizar el rol de un usuario
+  updateAuthorization(userId: string, newRole: string): Observable<any> {
+    try {
+      return this.userService.updateUser(userId, newRole).pipe(
+        catchError((error) => {
+          console.error('Error al actualizar rol:', error);
+          return throwError(() => new Error('Error al actualizar rol'));
+        })
+      );
+    } catch (error) {
+      console.error('Error al actualizar rol:', error);
+      return throwError(() => new Error('Error al actualizar rol'));
+    }
+  }
 }

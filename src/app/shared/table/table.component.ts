@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { roles } from './roles';
 import { UserInterface } from '../../models/users';
 import { AuthService } from '../../auth/auth.service';
+import { ApiService } from '../../service/api.service';
 
 @Component({
   selector: 'app-table',
@@ -24,7 +25,7 @@ export class TableComponent implements OnInit {
   confirmPassword: string = '';
   passwordsDoNotMatch: boolean = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private apiService: ApiService ) {}
 
   myUserRole: string | null = this.authService.getRole();
 
@@ -74,22 +75,24 @@ export class TableComponent implements OnInit {
   // Función para manejar la actualización del estado
   onUpdateStatus(): void {
     const id = this.getSelectedRowId();
-    if (id) {
-      console.log(`ID seleccionado: ${id}`);
-      console.log(`Estado seleccionado: ${this.selectedStatus}`);
+    if (id !== null) {
+      this.apiService.updateReportStatus(id, this.selectedStatus).subscribe();
+    } else {
+      console.error('ID is null, cannot update status');
     }
+    this.selectedStatus = '';
     this.showStatusModal = false;
   }
 
   // Función para manejar la actualización de la contraseña
   onUpdatePassword() {
-    // const id = this.getSelectedRowId();
+    const id = this.getSelectedRowId();
     if (this.newPassword === '' || this.confirmPassword === '') {
-      console.log('Contraseñas vacías');
+      console.error('Contraseñas vacías');
       return;
     } else if (this.newPassword === this.confirmPassword) {
       // Lógica para actualizar la contraseña
-      console.log('Contraseña actualizada');
+      this.apiService.updatePassword(this.newPassword, id!).subscribe();
       this.showPasswordModal = false;
       this.newPassword = '';
       this.confirmPassword = '';
@@ -102,13 +105,12 @@ export class TableComponent implements OnInit {
 
   onUpdateAuthorization() {
     const id = this.getSelectedRowId();
-    console.log(`ID seleccionado: ${id}`);
     if (this.selectedAuthorization === '') {
-      console.log('Rol no seleccionado');
+      console.error('Rol no seleccionado');
       return;
     } else {
       // Lógica para actualizar el rol
-      console.log('Rol actualizado');
+      this.apiService.updateAuthorization(id!, this.selectedAuthorization).subscribe();
       this.showAuthorizationModal = false;
       this.selectedAuthorization = '';
     }

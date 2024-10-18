@@ -11,7 +11,7 @@ o
 o
 ` yarn install `
 
-## Correr el Pryecto
+## Correr el Proyecto
 
 Ejcutar `ng serve` en la terminal. Se alojara en `http://localhost:4200/`.
 

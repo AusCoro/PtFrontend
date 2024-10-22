@@ -13,7 +13,7 @@ export class DashboardComponent {
     chart: {
       type: 'area',
       height: 350,
-      width: '100%', // Ensure this is a valid value
+      width: '100%',
     },
     series: [
       {

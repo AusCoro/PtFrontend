@@ -7,7 +7,7 @@
 </div>
 
 <!-- Mostrar la tabla solo cuando los datos estén cargados -->
-<app-table *ngIf="!loading" [headers]="tableHeaders" [data]="tableData"></app-table>
+<app-table *ngIf="!loading" [headers]="tableHeaders" [data]="tableData()"></app-table>
 
 <app-modal *ngIf="showModal">
   <h2 class="text-2xl font-bold mb-4">Agregar Usuario</h2>

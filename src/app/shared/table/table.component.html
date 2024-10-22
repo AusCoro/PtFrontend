@@ -41,7 +41,7 @@
     <tbody>
       <!-- Filas dinámicas con datos filtrados -->
       <tr
-        *ngFor="let row of filteredData; let rowIndex = index"
+        *ngFor="let row of filteredData(); let rowIndex = index"
         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
       >
         <td

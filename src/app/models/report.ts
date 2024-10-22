@@ -6,6 +6,7 @@ export interface ReportsInterface {
   reference_number: number;
   bdo_number: number;
   delivery_zone: string;
+  destination: string;
   operator?: Operator;
   delivery_status?: string;
 }

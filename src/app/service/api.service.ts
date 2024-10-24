@@ -163,4 +163,22 @@ export class ApiService {
       );
     }
   }
+
+  getReportsPercentage() {
+    try {
+      return this.dashService.getReportsPercentage().pipe(
+        catchError((error) => {
+          console.error('Error al obtener porcentajes de reportes:', error);
+          return throwError(
+            () => new Error('Error al obtener porcentajes de reportes')
+          );
+        })
+      );
+    } catch (error) {
+      console.error('Error al obtener porcentajes de reportes:', error);
+      return throwError(
+        () => new Error('Error al obtener porcentajes de reportes')
+      );
+    }
+  }
 }

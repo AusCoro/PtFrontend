@@ -6,6 +6,7 @@ import {
   PLATFORM_ID,
   EventEmitter,
   Output,
+  OnDestroy,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { filterOptionsModel } from '../../models/dash.model';
@@ -15,7 +16,7 @@ import { filterOptionsModel } from '../../models/dash.model';
   templateUrl: 'chart.component.html',
   styleUrls: ['chart.components.scss'],
 })
-export class ChartComponent implements OnInit {
+export class ChartComponent implements OnInit, OnDestroy {
   @Input() options: any;
   @Input() input_option: filterOptionsModel = {
     label: 'Mes',
@@ -64,6 +65,8 @@ export class ChartComponent implements OnInit {
   selectedYear: number = new Date().getFullYear();
   actual_option: filterOptionsModel = this.input_option;
 
+  private chart: any;
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
@@ -78,6 +81,12 @@ export class ChartComponent implements OnInit {
     // Inicializa el mes y año seleccionados si se proporcionan como @Input
     this.selectedMonth = this.InputMonth || new Date().getMonth() + 1;
     this.selectedYear = this.InputYear || new Date().getFullYear();
+  }
+
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy();
+    }
   }
 
   trackByFn(index: number, item: filterOptionsModel): string {
@@ -115,10 +124,10 @@ export class ChartComponent implements OnInit {
   }
 
   renderChart(ApexCharts: any, options?: any) {
-    const chart = new ApexCharts(
+    this.chart = new ApexCharts(
       document.querySelector('#area-chart'),
       options
     );
-    chart.render();
+    this.chart.render();
   }
 }

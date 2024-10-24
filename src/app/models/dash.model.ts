@@ -13,3 +13,19 @@ export interface filterOptionsModel {
   label: string;
   value: string;
 }
+
+export interface filterParams {
+  filter: filterOptionsModel;
+  month?: number;
+  year?: number;
+  operator_id?: string;
+}
+
+export interface StatutesPercent {
+  status: string;
+  percentage: number;
+}
+
+export interface StatutesPercentResponse {
+  statuses: StatutesPercent[];
+}

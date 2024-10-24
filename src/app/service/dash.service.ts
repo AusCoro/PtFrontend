@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { RepostsCountResponse } from '../models/dash.model';
+import { RepostsCountResponse, StatutesPercentResponse } from '../models/dash.model';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
@@ -30,5 +30,17 @@ export class DashService {
         Authorization: `Bearer ${this.authService.getToken()}`,
       },
     });
+  }
+
+  // Método GET para obtener el porcentaje de reportes
+  getReportsPercentage(): Observable<StatutesPercentResponse> {
+    return this.http.get<StatutesPercentResponse>(
+      `${this.apiUrl}/dash/status-percentages/`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.authService.getToken()}`,
+        },
+      }
+    );
   }
 }

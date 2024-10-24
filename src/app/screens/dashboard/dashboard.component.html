@@ -2,15 +2,19 @@
 <div *ngIf="isLoading(); else chartContent">
   <p>Loading...</p>
 </div>
+
 <ng-template #chartContent>
-  <app-chart
-    [options]="options"
-    [input_option]="static_option"
-    [InputMonth]="InputMonth"
-    [InputYear]="InputYear"
-    (userIdSearch)="onUserIdSearch($event)"
-    (optionSelected)="onOptionSelected($event)"
-    (monthSelected)="onMonthSelected($event)"
-    (yearSelected)="onYearSelected($event)"
-  ></app-chart>
+  <div class="flex flex-row gap-4">
+    <app-chart
+      [options]="areaOptions"
+      [input_option]="static_option"
+      [InputMonth]="InputMonth"
+      [InputYear]="InputYear"
+      (userIdSearch)="onUserIdSearch($event)"
+      (optionSelected)="onOptionSelected($event)"
+      (monthSelected)="onMonthSelected($event)"
+      (yearSelected)="onYearSelected($event)"
+    ></app-chart>
+    <app-pie-chart [pieData]="pieOptions"></app-pie-chart>
+  </div>
 </ng-template>

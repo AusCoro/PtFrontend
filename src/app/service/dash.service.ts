@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { RepostsCountResponse, StatutesPercentResponse } from '../models/dash.model';
+import { CompletionTimesResponse, RepostsCountResponse, StatutesPercentResponse } from '../models/dash.model';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
@@ -37,6 +37,21 @@ export class DashService {
     return this.http.get<StatutesPercentResponse>(
       `${this.apiUrl}/dash/status-percentages/`,
       {
+        headers: {
+          Authorization: `Bearer ${this.authService.getToken()}`,
+        },
+      }
+    );
+  }
+
+  // Método GET para obtener los tiempos de entrega
+  getCompletionTimes(
+    delivery_zone: string
+  ): Observable<CompletionTimesResponse> {
+    return this.http.get<CompletionTimesResponse>(
+      `${this.apiUrl}/dash/average-completion-times/`,
+      {
+        params: { delivery_zone },
         headers: {
           Authorization: `Bearer ${this.authService.getToken()}`,
         },

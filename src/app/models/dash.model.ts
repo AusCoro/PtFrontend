@@ -29,3 +29,13 @@ export interface StatutesPercent {
 export interface StatutesPercentResponse {
   statuses: StatutesPercent[];
 }
+
+export interface CompletionTimes {
+  average_time: number;
+  delivery_zone: string;
+  destination: string;
+}
+
+export interface CompletionTimesResponse {
+  completion_times: CompletionTimes[];
+}

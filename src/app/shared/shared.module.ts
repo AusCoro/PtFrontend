@@ -7,6 +7,7 @@ import { ModalComponent } from './modal/modal.component';
 import { TitleComponent } from './title/title.component';
 import { ChartComponent } from './chart/chart.component';
 import { PieChartComponent } from './pie-chart/pie-chart.component';
+import { ColumnChartComponent } from './column-chart/column-chart.component';
 
 @NgModule({
   declarations: [
@@ -15,9 +16,18 @@ import { PieChartComponent } from './pie-chart/pie-chart.component';
     ModalComponent,
     TitleComponent,
     ChartComponent,
-    PieChartComponent
+    PieChartComponent,
+    ColumnChartComponent,
   ],
   imports: [CommonModule, FormsModule],
-  exports: [TableComponent, AddButtonComponent, ModalComponent, TitleComponent, ChartComponent, PieChartComponent],
+  exports: [
+    TableComponent,
+    AddButtonComponent,
+    ModalComponent,
+    TitleComponent,
+    ChartComponent,
+    PieChartComponent,
+    ColumnChartComponent,
+  ],
 })
 export class SharedModule {}

@@ -2,14 +2,31 @@ export interface ChartOptions {
   colors?: string[];
   chart: {
     type: string;
-    height: number;
-    width: string;
+    height?: string | number;
+    width?: string;
+    fontFamily?: string;
+    toolbar?: {
+      show?: boolean;
+    };
   };
   stroke?: {
     colors?: string[];
     lineCap?: string;
+    show?: boolean;
+    width?: number;
+  };
+  grid?: {
+    show?: boolean;
+    strokeDashArray?: number;
+    padding?: { left?: number; right?: number; top?: number };
   };
   plotOptions?: {
+    bar?: {
+      horizontal?: boolean;
+      columnWidth?: string;
+      borderRadiusApplication?: string;
+      borderRadius?: number;
+    };
     pie?: {
       labels?: {
         show?: boolean;
@@ -20,10 +37,18 @@ export interface ChartOptions {
       };
     };
   };
+  tooltip?: {
+    shared?: boolean;
+    intersect?: boolean;
+    style?: { fontFamily?: string };
+  };
+  states?: { hover?: { filter?: { type?: string; value?: number } } };
   labels?: string[];
-  series:{
+  series:
+    | {}
+    | {
         name?: string;
-        data?: number[];
+        data?: number[] | { x: string; y: number | string }[];
       }[]
     | number[];
   dataLabels?: {
@@ -35,42 +60,52 @@ export interface ChartOptions {
   legend?: {
     position?: string;
     fontFamily?: string;
+    show?: boolean;
   };
   yaxis?: {
     labels?: {
       formatter?: (value: any) => any;
     };
+    show?: boolean;
   };
   xaxis?: {
     categories?: string[];
     labels?: {
       formatter?: (value: any) => any;
+      style?: {
+        fontFamily?: string;
+        cssClass?: string;
+      };
+      show?: boolean;
     };
     axisTicks?: {
       show?: boolean;
     };
     axisBorder?: {
       show?: boolean;
-    }
+    };
+    floating?: boolean;
   };
+  fill?: { opacity?: number };
 }
 
 export const AreaOptions: ChartOptions = {
-    chart: {
-      type: 'area',
-      height: 350,
-      width: '100%',
+  colors: ['#16BDCA'],
+  chart: {
+    type: 'area',
+    height: 350,
+    width: '100%',
+  },
+  series: [
+    {
+      name: 'Reportes',
+      data: [],
     },
-    series: [
-      {
-        name: 'Reportes',
-        data: [],
-      },
-    ],
-    xaxis: {
-      categories: [],
-    },
-  };
+  ],
+  xaxis: {
+    categories: [],
+  },
+};
 
 export const PieOptions: ChartOptions = {
   series: [],
@@ -79,6 +114,9 @@ export const PieOptions: ChartOptions = {
     height: 420,
     width: '100%',
     type: 'pie',
+    toolbar: {
+      show: true,
+    }
   },
   stroke: {
     colors: ['white'],
@@ -125,5 +163,90 @@ export const PieOptions: ChartOptions = {
     axisBorder: {
       show: true,
     },
+  },
+};
+
+export const ColumnOptions: ChartOptions = {
+  colors: ['#16BDCA'],
+  series: [
+    {
+      name: 'Organic',
+      color: '#16BDCA',
+      data: [
+      ],
+    },
+  ],
+  chart: {
+    type: 'bar',
+    height: '320px',
+    fontFamily: 'Inter, sans-serif',
+    toolbar: {
+      show: true,
+    },
+  },
+  plotOptions: {
+    bar: {
+      horizontal: false,
+      columnWidth: '70%',
+      borderRadiusApplication: 'end',
+      borderRadius: 8,
+    },
+  },
+  tooltip: {
+    shared: true,
+    intersect: false,
+    style: {
+      fontFamily: 'Inter, sans-serif',
+    },
+  },
+  states: {
+    hover: {
+      filter: {
+        type: 'darken',
+        value: 1,
+      },
+    },
+  },
+  stroke: {
+    show: true,
+    width: 0,
+    colors: ['transparent'],
+  },
+  grid: {
+    show: false,
+    strokeDashArray: 4,
+    padding: {
+      left: 2,
+      right: 2,
+      top: -14,
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  legend: {
+    show: false,
+  },
+  xaxis: {
+    floating: false,
+    labels: {
+      show: true,
+      style: {
+        fontFamily: 'Inter, sans-serif',
+        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400',
+      },
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+  },
+  fill: {
+    opacity: 1,
   },
 };

@@ -8,7 +8,7 @@ import {
 } from '../../models/dash.model';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 import { CommonModule } from '@angular/common';
-import { AreaOptions, PieOptions } from '../../models/chart_options.model';
+import { AreaOptions, ColumnOptions, PieOptions } from '../../models/chart_options.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,8 +22,10 @@ export class DashboardComponent implements OnInit {
   static_option: filterOptionsModel = { label: 'Mes', value: 'monthly' };
   InputMonth: number = new Date().getMonth() + 1;
   InputYear: number = new Date().getFullYear();
+  InputZone: string = 'Zona hotelera';
   areaOptions = AreaOptions;
   pieOptions = PieOptions;
+  columnOptions = ColumnOptions;
   params: filterParams = {
     filter: this.static_option,
     month: this.InputMonth,
@@ -35,6 +37,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getReportsCount(this.params);
     this.getPieChartData();
+    this.getCompletionTimes(this.InputZone);
   }
 
   async getReportsCount(filterParams: filterParams) {
@@ -147,9 +150,35 @@ export class DashboardComponent implements OnInit {
         colors: colors,
       };
     } catch (error) {
-      console.error(error);
+      alert('No hay datos para ese filtro en específico.');
     } finally {
       this.isLoading.set(false);
+    }
+  }
+
+  async getCompletionTimes(delivery_zone: string) {
+    this.isLoading.update(()=>true);
+    try {
+      const response = await firstValueFrom(
+        this.apiService.getCompletionTimes(delivery_zone)
+      );
+      this.columnOptions = {
+        ...this.columnOptions,
+        series: [
+          {
+            name: 'Tiempo promedio',
+            data: response.completion_times.map((data) => ({
+              x: data.destination,
+              y: data.average_time,
+            })),
+          },
+        ],
+      };
+    } catch (error) {
+      alert('No hay datos para ese filtro en específico.');
+    } finally
+    {
+      this.isLoading.update(()=>false);
     }
   }
 
@@ -188,5 +217,10 @@ export class DashboardComponent implements OnInit {
     this.params.year = year;
     this.InputYear = year;
     this.getReportsCount(this.params);
+  }
+
+  onZoneSelected(zone: string) {
+    this.InputZone = zone;
+    this.getCompletionTimes(zone);
   }
 }

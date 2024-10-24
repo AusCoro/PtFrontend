@@ -7,6 +7,7 @@ import { ApiService } from '../../service/api.service';
 import { firstValueFrom } from 'rxjs';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { DeliveryZone } from '../../models/delivery-zone.model';
 
 
 class reportStatus {
@@ -27,6 +28,7 @@ export class ReportsComponent implements OnInit {
   reports: ReportsInterface[] = [];
   tableData = signal<any[]>([]);
   loading: boolean = true;
+  deliveryZones = DeliveryZone;
 
   constructor(private apiService: ApiService) {}
 

@@ -181,4 +181,22 @@ export class ApiService {
       );
     }
   }
+
+  getCompletionTimes(delivery_zone: string) {
+    try {
+      return this.dashService.getCompletionTimes(delivery_zone).pipe(
+        catchError((error) => {
+          console.error('Error al obtener tiempos de entrega:', error);
+          return throwError(
+            () => new Error('Error al obtener tiempos de entrega')
+          );
+        })
+      );
+    } catch (error) {
+      console.error('Error al obtener tiempos de entrega:', error);
+      return throwError(
+        () => new Error('Error al obtener tiempos de entrega')
+      );
+    }
+  }
 }

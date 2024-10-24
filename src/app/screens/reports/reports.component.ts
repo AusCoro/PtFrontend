@@ -72,7 +72,6 @@ export class ReportsComponent implements OnInit {
   }
 
   async onSubmit() {
-    console.log('Submitting report:', this.new_report);
     if (this.isReportEmpty(this.new_report)) {
       console.error(
         'El reporte no ha sido modificado completamente y no se enviará.'

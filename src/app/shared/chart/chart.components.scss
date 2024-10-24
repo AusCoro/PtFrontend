@@ -1,0 +1,16 @@
+.transition {
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+
+  &.show {
+    opacity: 1;
+    max-height: 100px; // Ajusta según sea necesario
+  }
+
+  &.hide {
+    opacity: 0;
+    max-height: 0;
+  }
+}

@@ -1,45 +1,109 @@
 <app-title>Reportes</app-title>
-<app-add-button class="flex justify-end" (click)="showModal = true" >Crear reporte</app-add-button>
+<app-add-button class="flex justify-end" (click)="showModal = true"
+  >Crear reporte</app-add-button
+>
 
 <!-- Mensaje de carga -->
- <div *ngIf="loading" class="flex justify-center items-center">
+<div *ngIf="loading" class="flex justify-center items-center">
   <p>Cargando datos...</p>
 </div>
 
 <!-- Tabla -->
-<app-table *ngIf="!loading" [headers]="tableHeaders" [data]="tableData()"></app-table>
+<app-table
+  *ngIf="!loading"
+  [headers]="tableHeaders"
+  [data]="tableData()"
+></app-table>
 
 <!-- Modal para agregar un nuevo reporte -->
 <app-modal *ngIf="showModal">
-    <h2 class="text-lg font-bold mb-4">Crear BDO</h2>
-    <form (ngSubmit)="onSubmit()">
-        <div class="mb-4">
-            <label for="numRef" class="block text-gray-700 font-bold mb-2">Número de Referencia:</label>
-            <input type="number" id="numRef" [(ngModel)]="new_report.reference_number" name="numRef" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-            <label for="numBDO" class="block text-gray-700 font-bold mb-2">Número de BDO:</label>
-            <input type="number" id="numBDO" [(ngModel)]="new_report.bdo_number" name="numBDO" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="mb-4">
-            <label for="airline" class="block text-gray-700 font-bold mb-2">Aerolínea:</label>
-            <input type="text" id="airline" [(ngModel)]="new_report.airline" name="airline" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <!-- Selector de destino -->
-        <div class="mb-4">
-            <label for="destination" class="block text-gray-700 font-bold mb-2">Destino:</label>
-            <select id="destination" [(ngModel)]="new_report.destination" name="destination" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="ARBNB">ARBNB</option>
-                <option value="HotelX">HotelX</option>
-            </select>
-        </div>
-        <div class="mb-4">
-            <label for="deliveryZone" class="block text-gray-700 font-bold mb-2">Zona de Entrega:</label>
-            <input type="text" id="deliveryZone" [(ngModel)]="new_report.delivery_zone" name="deliveryZone" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <div class="flex items-center justify-between">
-            <button type="button" (click)="onCancel()" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2">Cancelar</button>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline">Guardar</button>
-        </div>
-    </form>
+  <h2 class="text-lg font-bold mb-4">Crear BDO</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-4">
+      <label for="numRef" class="block text-gray-700 font-bold mb-2"
+        >Número de Referencia:</label
+      >
+      <input
+        type="number"
+        id="numRef"
+        [(ngModel)]="new_report.reference_number"
+        name="numRef"
+        required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      />
+    </div>
+    <div class="mb-4">
+      <label for="numBDO" class="block text-gray-700 font-bold mb-2"
+        >Número de BDO:</label
+      >
+      <input
+        type="number"
+        id="numBDO"
+        [(ngModel)]="new_report.bdo_number"
+        name="numBDO"
+        required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      />
+    </div>
+    <div class="mb-4">
+      <label for="airline" class="block text-gray-700 font-bold mb-2"
+        >Aerolínea:</label
+      >
+      <input
+        type="text"
+        id="airline"
+        [(ngModel)]="new_report.airline"
+        name="airline"
+        required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      />
+    </div>
+    <!-- Selector de destino -->
+    <div class="mb-4">
+      <label for="destination" class="block text-gray-700 font-bold mb-2"
+        >Destino:</label
+      >
+      <select
+        id="destination"
+        [(ngModel)]="new_report.destination"
+        name="destination"
+        required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      >
+        <option value="ARBNB">ARBNB</option>
+        <option value="HotelX">HotelX</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label for="deliveryZone" class="block text-gray-700 font-bold mb-2"
+        >Zona de Entrega:</label
+      >
+      <select
+        id="deliveryZone"
+        [(ngModel)]="new_report.delivery_zone"
+        name="deliveryZone"
+        required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      >
+        <option *ngFor="let zone of deliveryZones" [value]="zone">
+          {{ zone }}
+        </option>
+      </select>
+    </div>
+    <div class="flex items-center justify-between">
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      >
+        Guardar
+      </button>
+    </div>
+  </form>
 </app-modal>

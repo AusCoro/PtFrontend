@@ -1,0 +1,36 @@
+<div
+  class="max-w-sm w-full h-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6"
+>
+  <div
+    class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700"
+  >
+    <div class="flex items-center">
+      <h5
+        class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-1"
+      >
+        Tiempo de entrega por zona
+      </h5>
+    </div>
+  </div>
+
+  <div id="column-chart"></div>
+  <div
+    class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between"
+  >
+    <div class="flex justify-between items-center pt-5">
+      <!-- Button -->
+        <div class="flex justify-between items-center pt-5">
+          <!-- Selector de zonas de entrega -->
+          <select
+            class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+            (change)="onZoneChange()"
+            [(ngModel)]="selectedZone"
+          >
+            <option *ngFor="let zone of deliveryZones; trackBy: trackByFn" [value]="zone">
+              {{ zone }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
 import { ReportService } from './report.service';
+import { DashService } from './dash.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -10,7 +11,8 @@ import { catchError } from 'rxjs/operators';
 export class ApiService {
   constructor(
     private userService: UserService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private dashService: DashService
   ) {}
 
   // Método para el login usando UserService
@@ -94,12 +96,16 @@ export class ApiService {
       return this.reportService.updateReportStatus(reportId, status).pipe(
         catchError((error) => {
           console.error('Error al actualizar status del reporte:', error);
-          return throwError(() => new Error('Error al actualizar status del reporte'));
+          return throwError(
+            () => new Error('Error al actualizar status del reporte')
+          );
         })
       );
     } catch (error) {
       console.error('Error al actualizar status del reporte:', error);
-      return throwError(() => new Error('Error al actualizar status del reporte'));
+      return throwError(
+        () => new Error('Error al actualizar status del reporte')
+      );
     }
   }
 
@@ -130,6 +136,67 @@ export class ApiService {
     } catch (error) {
       console.error('Error al actualizar rol:', error);
       return throwError(() => new Error('Error al actualizar rol'));
+    }
+  }
+
+  getReportsCount(
+    filter: string,
+    month?: number,
+    year?: number,
+    operator_id?: string
+  ) {
+    try {
+      return this.dashService
+        .getReportsCount(filter, month, year, operator_id)
+        .pipe(
+          catchError((error) => {
+            console.error('Error al obtener conteos de reportes:', error);
+            return throwError(
+              () => new Error('Error al obtener conteos de reportes')
+            );
+          })
+        );
+    } catch (error) {
+      console.error('Error al obtener conteos de reportes:', error);
+      return throwError(
+        () => new Error('Error al obtener conteos de reportes')
+      );
+    }
+  }
+
+  getReportsPercentage() {
+    try {
+      return this.dashService.getReportsPercentage().pipe(
+        catchError((error) => {
+          console.error('Error al obtener porcentajes de reportes:', error);
+          return throwError(
+            () => new Error('Error al obtener porcentajes de reportes')
+          );
+        })
+      );
+    } catch (error) {
+      console.error('Error al obtener porcentajes de reportes:', error);
+      return throwError(
+        () => new Error('Error al obtener porcentajes de reportes')
+      );
+    }
+  }
+
+  getCompletionTimes(delivery_zone: string) {
+    try {
+      return this.dashService.getCompletionTimes(delivery_zone).pipe(
+        catchError((error) => {
+          console.error('Error al obtener tiempos de entrega:', error);
+          return throwError(
+            () => new Error('Error al obtener tiempos de entrega')
+          );
+        })
+      );
+    } catch (error) {
+      console.error('Error al obtener tiempos de entrega:', error);
+      return throwError(
+        () => new Error('Error al obtener tiempos de entrega')
+      );
     }
   }
 }

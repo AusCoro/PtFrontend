@@ -29,12 +29,10 @@
       </select>
     </div>
     <!-- boton para agregar un selector de zona -->
-    <div class="mb-4">
+        <div class="mb-4">
       <label for="zone" class="block text-sm font-medium text-gray-700">Zona</label>
       <select id="zone" name="zone" [(ngModel)]="newUser.zone" required autocomplete="zone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-        <option value="Yucatan">Yucatan</option>
-        <option value="Cancun">Cancun</option>
-        <option value="Cosumel">Cosumel</option>
+        <option *ngFor="let zone of deliveryZones" [value]="zone">{{ zone }}</option>
       </select>
     </div>
 

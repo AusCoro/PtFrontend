@@ -7,6 +7,7 @@ import { ApiService } from '../../service/api.service';
 import { firstValueFrom } from 'rxjs';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { DeliveryZone } from '../../models/delivery-zone.model';
 
 
 class reportStatus {
@@ -27,6 +28,7 @@ export class ReportsComponent implements OnInit {
   reports: ReportsInterface[] = [];
   tableData = signal<any[]>([]);
   loading: boolean = true;
+  deliveryZones = DeliveryZone;
 
   constructor(private apiService: ApiService) {}
 
@@ -72,7 +74,6 @@ export class ReportsComponent implements OnInit {
   }
 
   async onSubmit() {
-    console.log('Submitting report:', this.new_report);
     if (this.isReportEmpty(this.new_report)) {
       console.error(
         'El reporte no ha sido modificado completamente y no se enviará.'

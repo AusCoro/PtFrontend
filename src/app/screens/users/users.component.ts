@@ -5,7 +5,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { UserInterface } from '../../models/users';
 import { ApiService } from '../../service/api.service';
 import { firstValueFrom } from 'rxjs';
-import { on } from 'node:events';
+import { DeliveryZone } from '../../models/delivery-zone.model';
 
 @Component({
   selector: 'app-users',
@@ -18,6 +18,7 @@ export class UsersComponent implements OnInit {
   tableData = signal<any[]>([]);
   users: UserInterface[] = [];
   loading: boolean = true; // Bandera de carga
+  deliveryZones = DeliveryZone;
 
   constructor(private apiService: ApiService) {}
 
@@ -59,7 +60,8 @@ export class UsersComponent implements OnInit {
       user.password === '' ||
       user.first_name === '' ||
       user.last_name === '' ||
-      user.role === '' || user.zone === ''
+      user.role === '' ||
+      user.zone === ''
     );
   }
 
@@ -103,10 +105,12 @@ export class UsersComponent implements OnInit {
   async loadUsers() {
     try {
       this.users = await firstValueFrom(this.apiService.getUsers());
-      this.tableData.set(this.users.map((user) => ({
-        data: [user.id, user.username, user.full_name, '••••••••', user.role],
-        id: user.id,
-      })))
+      this.tableData.set(
+        this.users.map((user) => ({
+          data: [user.id, user.username, user.full_name, '••••••••', user.role],
+          id: user.id,
+        }))
+      );
     } catch (error) {
       console.error('Error loading users:', error);
     } finally {

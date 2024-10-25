@@ -1,2 +1,25 @@
 <app-title>Dashboard</app-title>
-<app-chart [options]="options"></app-chart>
+<div *ngIf="isLoading(); else chartContent">
+  <p>Loading...</p>
+</div>
+
+<ng-template #chartContent>
+  <div class="flex flex-row gap-4">
+    <app-chart
+      [options]="areaOptions"
+      [input_option]="static_option"
+      [InputMonth]="InputMonth"
+      [InputYear]="InputYear"
+      (userIdSearch)="onUserIdSearch($event)"
+      (optionSelected)="onOptionSelected($event)"
+      (monthSelected)="onMonthSelected($event)"
+      (yearSelected)="onYearSelected($event)"
+    ></app-chart>
+    <app-pie-chart [pieData]="pieOptions"></app-pie-chart>
+    <app-column-chart
+      [columnData]="columnOptions"
+      [inputZone]="InputZone"
+      (zoneSelected)="onZoneSelected($event)"
+    ></app-column-chart>
+  </div>
+</ng-template>

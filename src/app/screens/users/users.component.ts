@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { UserInterface } from '../../models/users';
 import { ApiService } from '../../service/api.service';
 import { firstValueFrom } from 'rxjs';
-import { on } from 'node:events';
+import { DeliveryZone } from '../../models/delivery-zone.model';
 
 @Component({
   selector: 'app-users',
@@ -15,9 +15,10 @@ import { on } from 'node:events';
 })
 export class UsersComponent implements OnInit {
   showModal: boolean = false;
-  tableData: any[] = [];
+  tableData = signal<any[]>([]);
   users: UserInterface[] = [];
   loading: boolean = true; // Bandera de carga
+  deliveryZones = DeliveryZone;
 
   constructor(private apiService: ApiService) {}
 
@@ -59,7 +60,8 @@ export class UsersComponent implements OnInit {
       user.password === '' ||
       user.first_name === '' ||
       user.last_name === '' ||
-      user.role === '' || user.zone === ''
+      user.role === '' ||
+      user.zone === ''
     );
   }
 
@@ -71,11 +73,27 @@ export class UsersComponent implements OnInit {
         const response = await firstValueFrom(
           this.apiService.createUser(this.newUser)
         );
-        this.users.push(response);
+        this.tableData.update((current: any[]) => {
+          current.push({
+            data: [
+              response.id,
+              response.username,
+              response.full_name,
+              '••••••••',
+              response.role,
+            ],
+            id: response.id,
+          });
+          return current;
+        });
+        this.loading = true;
       } catch (error) {
         console.error('Error creating user:', error);
       } finally {
         this.onCancel();
+        setTimeout(() => {
+          this.loading = false;
+        }, 100);
       }
     }
   }
@@ -87,10 +105,12 @@ export class UsersComponent implements OnInit {
   async loadUsers() {
     try {
       this.users = await firstValueFrom(this.apiService.getUsers());
-      this.tableData = this.users.map((user) => ({
-        data: [user.id, user.username, user.full_name, '••••••••', user.role],
-        id: user.id,
-      }));
+      this.tableData.set(
+        this.users.map((user) => ({
+          data: [user.id, user.username, user.full_name, '••••••••', user.role],
+          id: user.id,
+        }))
+      );
     } catch (error) {
       console.error('Error loading users:', error);
     } finally {

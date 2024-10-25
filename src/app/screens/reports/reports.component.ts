@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { ReportsInterface } from '../../models/report';
@@ -7,6 +7,8 @@ import { ApiService } from '../../service/api.service';
 import { firstValueFrom } from 'rxjs';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { DeliveryZone } from '../../models/delivery-zone.model';
+
 
 class reportStatus {
   inProgress: string = 'En progreso';
@@ -24,8 +26,9 @@ class reportStatus {
 export class ReportsComponent implements OnInit {
   showModal: boolean = false;
   reports: ReportsInterface[] = [];
-  tableData: any[] = [];
+  tableData = signal<any[]>([]);
   loading: boolean = true;
+  deliveryZones = DeliveryZone;
 
   constructor(private apiService: ApiService) {}
 
@@ -35,6 +38,7 @@ export class ReportsComponent implements OnInit {
     reference_number: 0,
     bdo_number: 0,
     airline: '',
+    destination: '',
     delivery_zone: '',
   };
 
@@ -44,6 +48,7 @@ export class ReportsComponent implements OnInit {
     'Fecha de creacion',
     'Fecha de finalizacion',
     'Aerolínea',
+    'Destino',
     'Zona de entrega',
     'Estatus',
   ];
@@ -56,6 +61,8 @@ export class ReportsComponent implements OnInit {
     } else if (report.airline === '') {
       return true;
     } else if (report.delivery_zone === '') {
+      return true;
+    } else if (report.destination === '') {
       return true;
     } else {
       return false;
@@ -73,17 +80,40 @@ export class ReportsComponent implements OnInit {
       );
       return;
     } else {
-      try {
-        const response = await firstValueFrom(
-          this.apiService.createReport(this.new_report)
-        );
-        this.reports.push(response);
-        console.log('Report created:', response);
-      } catch (error) {
-        console.error('Error creating report:', error);
-      } finally {
-        this.onCancel();
-      }
+      this.apiService.createReport(this.new_report).subscribe({
+        next: (response) => {
+          this.tableData.update((current: any[]) => {
+            current.push({
+              data: [
+                response.reference_number,
+                response.bdo_number,
+                response.creation_date
+                  ? this.formatDate(response.creation_date)
+                  : 'N/A',
+                response.delivery_date
+                  ? this.formatDate(response.delivery_date)
+                  : 'N/A',
+                response.airline,
+                response.destination,
+                response.delivery_zone,
+                response.delivery_status,
+              ],
+              id: response.id,
+            });
+            return current;
+          });
+          this.loading = true;
+        },
+        error: (error) => {
+          console.error('Error creating report:', error);
+        },
+        complete: () => {
+          this.onCancel();
+          setTimeout(() => {
+            this.loading = false;
+          }, 100);
+        },
+      });
     }
   }
 
@@ -92,6 +122,7 @@ export class ReportsComponent implements OnInit {
       reference_number: 0,
       bdo_number: 0,
       airline: '',
+      destination: '',
       delivery_zone: '',
     };
     this.showModal = false;
@@ -102,24 +133,34 @@ export class ReportsComponent implements OnInit {
   }
 
   async loadReports() {
-    try {
-      this.reports = await firstValueFrom(this.apiService.getReports());
-      this.tableData = this.reports.map((report) => ({
-        data: [
-          report.reference_number,
-          report.bdo_number,
-          report.creation_date ? this.formatDate(report.creation_date) : 'N/A',
-          report.delivery_date ? this.formatDate(report.delivery_date) : 'N/A',
-          report.airline,
-          report.delivery_zone,
-          report.delivery_status,
-        ],
-        id: report.id,
-      }));
-    } catch (error) {
-      console.error('Error loading reports:', error);
-    } finally {
-      this.loading = false;
-    }
+    this.apiService.getReports().subscribe({
+      next: (reports) => {
+        this.tableData.set(
+          reports.map((report) => ({
+            data: [
+              report.reference_number,
+              report.bdo_number,
+              report.creation_date
+                ? this.formatDate(report.creation_date)
+                : 'N/A',
+              report.delivery_date
+                ? this.formatDate(report.delivery_date)
+                : 'N/A',
+              report.airline,
+              report.destination,
+              report.delivery_zone,
+              report.delivery_status,
+            ],
+            id: report.id,
+          }))
+        );
+      },
+      error: (error) => {
+        console.error('Error loading reports:', error);
+      },
+      complete: () => {
+        this.loading = false;
+      },
+    });
   }
 }

@@ -2,12 +2,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReportService {
-  private apiUrl = 'http://localhost:8000';
+  private apiUrl = environment.apiUrl; // La URL de tu API
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { CompletionTimesResponse, RepostsCountResponse, StatutesPercentResponse } from '../models/dash.model';
 import { Observable } from 'rxjs/internal/Observable';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashService {
-  private apiUrl = 'http://localhost:8000';
+  private apiUrl = environment.apiUrl; // La URL de tu API
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

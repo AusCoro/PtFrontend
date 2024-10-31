@@ -1,3 +1,12 @@
+export interface ReportsData {
+  delivery_date: string;
+  creation_date: string;
+  bdo_number: number;
+  airline: string;
+  delivery_status: string;
+  destination: string;
+}
+
 export interface ReportCount {
   day: number;
   month: string | number;
@@ -7,6 +16,7 @@ export interface ReportCount {
 
 export interface RepostsCountResponse {
   reports: ReportCount[];
+  reports_data?: ReportsData[];
 }
 
 export interface filterOptionsModel {
@@ -19,6 +29,8 @@ export interface filterParams {
   month?: number;
   year?: number;
   operator_id?: string;
+  airline?: string;
+  delivery_status?: string;
 }
 
 export interface StatutesPercent {

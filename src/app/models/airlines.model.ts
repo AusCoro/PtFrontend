@@ -1,0 +1,23 @@
+export const AirlinesList = [
+  'American Airlines',
+  'Delta',
+  'United Airlines',
+  'Southwest Airlines',
+  'Aeroméxico',
+  'Volaris',
+  'Interjet',
+  'JetBlue',
+  'Spirit Airlines',
+  'Frontier Airlines',
+  'Air Canada',
+  'WestJet',
+  'British Airways',
+  'Lufthansa',
+  'Iberia',
+  'Air France',
+  'KLM',
+  'Turkish Airlines',
+  'Avianca',
+  'Copa Airlines',
+  'Todas'
+];

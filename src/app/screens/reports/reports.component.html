@@ -1,6 +1,6 @@
-<app-title>Reportes</app-title>
+<app-title>BDOs (Ordenes de envio de equipaje)</app-title>
 <app-add-button class="flex justify-end" (click)="showModal = true"
-  >Crear reporte</app-add-button
+  >+ Nuevo BDO</app-add-button
 >
 
 <!-- Mensaje de carga -->
@@ -46,34 +46,57 @@
       />
     </div>
     <div class="mb-4">
-      <label for="airline" class="block text-gray-700 font-bold mb-2"
-        >Aerolínea:</label
-      >
-      <input
-        type="text"
-        id="airline"
-        [(ngModel)]="new_report.airline"
-        name="airline"
-        required
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-      />
+      <label for="airline" class="block text-gray-700 font-bold mb-2">
+        Aerolínea:
+      </label>
+      <mat-form-field class="w-full">
+        <input
+          type="text"
+          matInput
+          [formControl]="airlineControl"
+          [matAutocomplete]="autoAirline"
+          class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
+        />
+        <mat-autocomplete
+          #autoAirline="matAutocomplete"
+          (optionSelected)="new_report.airline = $event.option.value"
+        >
+          <mat-option
+            *ngFor="let option of filteredAirlineOptions | async"
+            [value]="option"
+          >
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
     </div>
-    <!-- Selector de destino -->
+    <!-- auto complete de destino -->
     <div class="mb-4">
       <label for="destination" class="block text-gray-700 font-bold mb-2"
         >Destino:</label
       >
-      <select
-        id="destination"
-        [(ngModel)]="new_report.destination"
-        name="destination"
-        required
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-      >
-        <option value="ARBNB">ARBNB</option>
-        <option value="HotelX">HotelX</option>
-      </select>
+      <mat-form-field class="w-full">
+        <input
+          type="text"
+          matInput
+          [formControl]="destinationControl"
+          [matAutocomplete]="auto"
+          class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="new_report.destination = $event.option.value"
+        >
+          <mat-option
+            *ngFor="let option of filteredOptions | async"
+            [value]="option"
+          >
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
     </div>
+    <!-- Selector de zona de entrega -->
     <div class="mb-4">
       <label for="deliveryZone" class="block text-gray-700 font-bold mb-2"
         >Zona de Entrega:</label

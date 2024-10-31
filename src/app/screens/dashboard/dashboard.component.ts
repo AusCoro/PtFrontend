@@ -4,6 +4,8 @@ import { ApiService } from '../../service/api.service';
 import {
   filterOptionsModel,
   filterParams,
+  ReportCount,
+  ReportsData,
   RepostsCountResponse,
 } from '../../models/dash.model';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
@@ -23,6 +25,8 @@ export class DashboardComponent implements OnInit {
   InputMonth: number = new Date().getMonth() + 1;
   InputYear: number = new Date().getFullYear();
   InputZone: string = 'Zona hotelera';
+  InputAirline: string = 'Todas';
+  InputStatus: string = 'Finalizado';
   areaOptions = AreaOptions;
   pieOptions = PieOptions;
   columnOptions = ColumnOptions;
@@ -30,6 +34,8 @@ export class DashboardComponent implements OnInit {
     filter: this.static_option,
     month: this.InputMonth,
     year: this.InputYear,
+    delivery_status: this.InputStatus,
+    airline: this.InputAirline,
   };
 
   constructor(private apiService: ApiService) {}
@@ -48,7 +54,9 @@ export class DashboardComponent implements OnInit {
           filterParams.filter.value,
           filterParams.month,
           filterParams.year,
-          filterParams.operator_id
+          filterParams.operator_id,
+          filterParams.airline,
+          filterParams.delivery_status
         )
       );
       // Update the signal with the response
@@ -157,7 +165,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async getCompletionTimes(delivery_zone: string) {
-    this.isLoading.update(()=>true);
+    this.isLoading.update(() => true);
     try {
       const response = await firstValueFrom(
         this.apiService.getCompletionTimes(delivery_zone)
@@ -176,9 +184,8 @@ export class DashboardComponent implements OnInit {
       };
     } catch (error) {
       alert('No hay datos para ese filtro en específico.');
-    } finally
-    {
-      this.isLoading.update(()=>false);
+    } finally {
+      this.isLoading.update(() => false);
     }
   }
 
@@ -191,7 +198,7 @@ export class DashboardComponent implements OnInit {
       case 'Pendiente':
         return '#FBBF24';
       case 'Finalizado':
-        return '#EF4444';
+        return '#4CAF50';
       default:
         return '#000000';
     }
@@ -222,5 +229,82 @@ export class DashboardComponent implements OnInit {
   onZoneSelected(zone: string) {
     this.InputZone = zone;
     this.getCompletionTimes(zone);
+  }
+
+  onClickDownload() {
+    const reportsData = this.reportsCountResponse();
+    if (!reportsData) {
+      console.error('No data available to download.');
+      return;
+    }
+
+    // Convert reportsData to CSV format
+    const csvRows: string[] = [];
+    // Assuming reportsData is an array of objects
+    const reports = reportsData.reports_data; // Adjust based on your data structure
+
+    if (!reports || reports.length === 0) {
+      console.error('No report data to download.');
+      return;
+    }
+
+    // Get headers
+    // TODO : Adjust based on your data structure
+    const headers: Array<keyof ReportsData> = [
+      'delivery_date',
+      'creation_date',
+      'bdo_number',
+      'airline',
+      'delivery_status',
+      'destination',
+    ];
+    csvRows.push(headers.join(','));
+
+    // Add data rows
+    for (const report of reports) {
+      const values = headers.map((header) => {
+        const val = report[header];
+
+        if (typeof val === 'string') {
+          return `"${val.replace(/"/g, '""')}"`;
+        } else if (val === null || val === undefined) {
+          return '';
+        } else {
+          return val;
+        }
+      });
+      csvRows.push(values.join(','));
+    }
+
+    const csvContent = csvRows.join('\n');
+
+    // Create a Blob with CSV content
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    // Get today's date and format it as YYYY-MM-DD
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+    // Create a link to trigger download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `reportsData_${formattedDate}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  onAirlineSelected(airline: string) {
+    this.params.airline = airline;
+    this.InputAirline = airline;
+    this.getReportsCount(this.params);
+  }
+
+  onStatusSelected(status: string) {
+    this.params.delivery_status = status;
+    this.InputStatus = status;
+    this.getReportsCount(this.params);
   }
 }

@@ -2,13 +2,17 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { ReportsInterface } from '../../models/report';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../service/api.service';
-import { firstValueFrom } from 'rxjs';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { DeliveryZone } from '../../models/delivery-zone.model';
-
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Observable } from 'rxjs/internal/Observable';
+import { map, startWith } from 'rxjs';
+import { AirlinesList } from '../../models/airlines.model';
+import { DestinationsList } from '../../models/desitinations.model';
 
 class reportStatus {
   inProgress: string = 'En progreso';
@@ -19,7 +23,14 @@ class reportStatus {
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [SharedModule, CommonModule, FormsModule],
+  imports: [
+    SharedModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatAutocompleteModule,
+  ],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.scss',
 })
@@ -29,6 +40,14 @@ export class ReportsComponent implements OnInit {
   tableData = signal<any[]>([]);
   loading: boolean = true;
   deliveryZones = DeliveryZone;
+
+  destinationControl = new FormControl();
+  options: string[] = DestinationsList;
+  filteredOptions!: Observable<string[]>;
+
+  airlineControl = new FormControl();
+  airlineOptions: string[] = AirlinesList;
+  filteredAirlineOptions!: Observable<string[]>;
 
   constructor(private apiService: ApiService) {}
 
@@ -52,6 +71,26 @@ export class ReportsComponent implements OnInit {
     'Zona de entrega',
     'Estatus',
   ];
+
+  ngOnInit(): void {
+    this.loadReports();
+    this.filteredOptions = this.destinationControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filter(value || '', this.options))
+    );
+
+    this.filteredAirlineOptions = this.airlineControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filter(value || '', this.airlineOptions))
+    );
+  }
+
+  private _filter(value: string, options: string[]): string[] {
+    const filterValue = value.toLowerCase();
+    return options.filter((option) =>
+      option.toLowerCase().includes(filterValue)
+    );
+  }
 
   isReportEmpty(report: ReportsInterface): boolean {
     if (report.reference_number === 0) {
@@ -126,10 +165,6 @@ export class ReportsComponent implements OnInit {
       delivery_zone: '',
     };
     this.showModal = false;
-  }
-
-  ngOnInit(): void {
-    this.loadReports();
   }
 
   async loadReports() {

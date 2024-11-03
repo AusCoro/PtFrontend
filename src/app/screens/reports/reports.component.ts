@@ -46,7 +46,9 @@ export class ReportsComponent implements OnInit {
   filteredOptions!: Observable<string[]>;
 
   airlineControl = new FormControl();
-  airlineOptions: string[] = AirlinesList;
+  airlineOptions: string[] = AirlinesList.filter(
+    (airline) => airline !== 'Todas'
+  );
   filteredAirlineOptions!: Observable<string[]>;
 
   constructor(private apiService: ApiService) {}

@@ -2,13 +2,24 @@
   class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6"
 >
   <div class="flex justify-between">
-    <div>
-      <h5
-        class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2"
-      >
-        {{ input_option.label }}
-      </h5>
-    </div>
+    <h5
+      class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2"
+    >
+      Conteo de BDOs por {{ input_option.label }}
+    </h5>
+
+    <button
+      *ngIf="
+        actual_option.value === 'monthly' || actual_option.value === '15 days'
+      "
+      class="w-1/12"
+      type="button"
+      name="print"
+      title="Imprimir reporte"
+      (click)="onClickPrint()"
+    >
+      <img src="../../../assets/download.png" class="text-gray-300" />
+    </button>
   </div>
   <div id="area-chart"></div>
   <div
@@ -17,20 +28,68 @@
     <div class="flex justify-between items-center pt-5">
       <!-- Button -->
       <div>
-        <select
-          [(ngModel)]="actual_option"
-          (change)="selectOption()"
-          class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
-          id="filter-options"
-          name="filter-options"
-        >
-          <option
-            *ngFor="let option of filter_options; trackBy: trackByFn"
-            [ngValue]="option"
+        <div class="flex flex-row space-x-2">
+          <div class="flex flex-col w-2/4">
+          <label
+            for="airline_filter"
+            class="text-sm font-medium text-gray-700 dark:text-gray-400"
+            >Aerolínea</label
           >
-            {{ option.label }}
-          </option>
-        </select>
+          <select
+            [(ngModel)]="selectedAirline"
+            (change)="onAirlineChange()"
+            name="airline_filter"
+            id="airline_filter"
+            class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+          >
+            <option *ngFor="let airline of airlines" [value]="airline">
+              {{ airline }}
+            </option>
+          </select>
+        </div>
+
+        <div class="flex flex-col w-2/4">
+          <label
+            for="Status_filter"
+            class="text-sm font-medium text-gray-700 dark:text-gray-400"
+            >Estatus</label
+          >
+          <select
+            [(ngModel)]="selectedStatus"
+            (change)="onStatusChange()"
+            name="Status_filter"
+            id="Status_filter"
+            class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+          >
+            <option *ngFor="let status of statu_lists" [value]="status">
+              {{ status }}
+            </option>
+          </select>
+        </div>
+        </div>
+
+        <!-- Selector de Filtro -->
+        <div class="flex flex-col w-2/4">
+          <label
+            for="filter-options"
+            class="text-sm font-medium text-gray-700 dark:text-gray-400"
+            >Filtro</label
+          >
+          <select
+            [(ngModel)]="actual_option"
+            (change)="selectOption()"
+            class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+            id="filter-options"
+            name="filter-options"
+          >
+            <option
+              *ngFor="let option of filter_options; trackBy: trackByFn"
+              [ngValue]="option"
+            >
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
 
         <!-- Selectores para Mes y Año -->
         <div

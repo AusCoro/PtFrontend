@@ -10,10 +10,15 @@
       [input_option]="static_option"
       [InputMonth]="InputMonth"
       [InputYear]="InputYear"
+      [InputAirline]="InputAirline"
+      [InputStatus]="InputStatus"
       (userIdSearch)="onUserIdSearch($event)"
       (optionSelected)="onOptionSelected($event)"
       (monthSelected)="onMonthSelected($event)"
       (yearSelected)="onYearSelected($event)"
+      (clickDownload)="onClickDownload()"
+      (airlineSelected)="onAirlineSelected($event)"
+      (statusSelected)="onStatusSelected($event)"
     ></app-chart>
     <app-pie-chart [pieData]="pieOptions"></app-pie-chart>
     <app-column-chart

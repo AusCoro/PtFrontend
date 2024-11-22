@@ -10,6 +10,8 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { filterOptionsModel } from '../../models/dash.model';
+import { BdoStatus } from '../../models/bdo_status.model';
+import { AirlinesList } from '../../models/airlines.model';
 
 @Component({
   selector: 'app-chart',
@@ -24,10 +26,15 @@ export class ChartComponent implements OnInit, OnDestroy {
   };
   @Input() InputMonth: number = 0;
   @Input() InputYear: number = 0;
+  @Input() InputStatus: string = '';
+  @Input() InputAirline: string = '';
   @Output() optionSelected = new EventEmitter<filterOptionsModel>();
   @Output() userIdSearch = new EventEmitter<string>();
   @Output() monthSelected = new EventEmitter<number>();
   @Output() yearSelected = new EventEmitter<number>();
+  @Output() clickDownload = new EventEmitter<void>();
+  @Output() statusSelected = new EventEmitter<string>();
+  @Output() airlineSelected = new EventEmitter<string>();
 
   isDropdownOpen = false;
   isUserIdInputVisible = false;
@@ -61,9 +68,14 @@ export class ChartComponent implements OnInit, OnDestroy {
     (_, i) => new Date().getFullYear() - i
   );
 
+  statu_lists: string[] = BdoStatus;
+  airlines: string[] = AirlinesList;
+
   selectedMonth: number = new Date().getMonth() + 1;
   selectedYear: number = new Date().getFullYear();
   actual_option: filterOptionsModel = this.input_option;
+  selectedStatus: string = this.InputStatus;
+  selectedAirline: string = this.InputAirline;
 
   private chart: any;
 
@@ -81,6 +93,8 @@ export class ChartComponent implements OnInit, OnDestroy {
     // Inicializa el mes y año seleccionados si se proporcionan como @Input
     this.selectedMonth = this.InputMonth || new Date().getMonth() + 1;
     this.selectedYear = this.InputYear || new Date().getFullYear();
+    this.selectedStatus = this.InputStatus || 'Finalizado';
+    this.selectedAirline = this.InputAirline || 'Todas';
   }
 
   ngOnDestroy(): void {
@@ -118,16 +132,25 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.yearSelected.emit(this.selectedYear);
   }
 
+  onClickPrint() {
+    this.clickDownload.emit();
+  }
+
+  onStatusChange() {
+    this.statusSelected.emit(this.selectedStatus);
+  }
+
+  onAirlineChange() {
+    this.airlineSelected.emit(this.selectedAirline);
+  }
+
   async loadApexCharts() {
     const ApexCharts = (await import('apexcharts')).default;
     this.renderChart(ApexCharts, this.options);
   }
 
   renderChart(ApexCharts: any, options?: any) {
-    this.chart = new ApexCharts(
-      document.querySelector('#area-chart'),
-      options
-    );
+    this.chart = new ApexCharts(document.querySelector('#area-chart'), options);
     this.chart.render();
   }
 }

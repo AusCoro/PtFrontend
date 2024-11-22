@@ -140,14 +140,10 @@ export class ApiService {
   }
 
   getReportsCount(
-    filter: string,
-    month?: number,
-    year?: number,
-    operator_id?: string
-  ) {
+filter: string, month?: number, year?: number, operator_id?: string, airline?: string, delivery_status?: string) {
     try {
       return this.dashService
-        .getReportsCount(filter, month, year, operator_id)
+        .getReportsCount(filter, month, year, operator_id, airline, delivery_status)
         .pipe(
           catchError((error) => {
             console.error('Error al obtener conteos de reportes:', error);

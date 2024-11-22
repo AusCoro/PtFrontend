@@ -18,12 +18,16 @@ export class DashService {
     filter: string,
     month?: number,
     year?: number,
-    operator_id?: string
+    operator_id?: string,
+    airline? : string,
+    delivery_status? : string
   ): Observable<RepostsCountResponse> {
     const params: any = { filter };
     if (month !== undefined) params.month = month;
     if (year !== undefined) params.year = year;
     if (operator_id !== undefined) params.operator_id = operator_id;
+    if (airline !== undefined) params.airline = airline;
+    if (delivery_status !== undefined) params.delivery_status = delivery_status;
 
     return this.http.get<RepostsCountResponse>(`${this.apiUrl}/dash/`, {
       params,
